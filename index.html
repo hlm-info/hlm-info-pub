@@ -284,6 +284,7 @@
     border:1px solid var(--line);border-radius:var(--radius);padding:5px 7px;font-size:12px;background:#fff;
   }
   .icon-btn{background:none;border:none;color:var(--ink-soft);padding:4px;border-radius:4px;}
+  .gestion-thumb{width:44px;height:34px;border-radius:2px;background-color:var(--bg-soft);display:inline-block;vertical-align:middle;margin-right:4px;}
   .icon-btn:hover{color:var(--danger);background:#F3E2DD;}
 
   .add-form{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:18px;}
@@ -550,7 +551,7 @@
       <div class="gestion-layout">
         <table class="g-table">
           <thead>
-            <tr><th>Référence</th><th>Ville</th><th>Surface</th><th>Prix FCFA</th><th>Statut</th><th></th></tr>
+            <tr><th>Photo</th><th>Référence</th><th>Ville</th><th>Surface</th><th>Prix FCFA</th><th>Statut</th><th></th></tr>
           </thead>
           <tbody id="gestionTbody"></tbody>
         </table>
@@ -569,6 +570,8 @@
             <option value="reserve">Réservé</option>
             <option value="vendu">Vendu</option>
           </select>
+          <label>Photo</label>
+          <input type="file" id="newPhoto" accept="image/*">
           <button class="cta-btn" id="addParcelleBtn"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M12 5v14M5 12h14"/></svg> Ajouter au catalogue</button>
         </div>
       </div>
@@ -741,7 +744,7 @@ function renderCatalogue(){
   const grid = document.getElementById('catalogueGrid');
   grid.innerHTML = list.map(p=>`
     <div class="p-card" data-id="${p.id}">
-      <div class="p-thumb" style="background:${gradFor(p.id)}">
+      <div class="p-thumb" style="background:${p.photo_url ? `center/cover no-repeat url('${p.photo_url}')` : gradFor(p.id)}">
         <span class="p-status ${statusClass(p.statut)}">${statusLabel(p.statut)}</span>
         <span class="p-tag">${p.ville.split(',')[0]}</span>
       </div>
@@ -778,7 +781,7 @@ function openModal(id){
   `).join('');
 
   document.getElementById('modalContent').innerHTML = `
-    <div class="modal-head" style="background:${gradFor(p.id)}">
+    <div class="modal-head" style="background:${p.photo_url ? `center/cover no-repeat url('${p.photo_url}')` : gradFor(p.id)}">
       <button class="modal-close" id="closeModalBtn">✕</button>
       <span class="badge-verified" style="background:rgba(255,255,255,0.9);">${steps.filter(Boolean).length}/4 étapes validées</span>
     </div>
@@ -821,6 +824,11 @@ function renderGestion(){
   const tbody = document.getElementById('gestionTbody');
   tbody.innerHTML = parcelles.map(p=>`
     <tr data-id="${p.id}">
+      <td>
+        <div class="gestion-thumb" style="background:${p.photo_url ? `center/cover no-repeat url('${p.photo_url}')` : gradFor(p.id)}"></div>
+        <input type="file" accept="image/*" class="photo-input" data-id="${p.id}" style="display:none;">
+        <button class="icon-btn photo-btn" data-id="${p.id}" title="Changer la photo"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 7h3l2-2h6l2 2h3v13H4z"/><circle cx="12" cy="13" r="3.5"/></svg></button>
+      </td>
       <td class="mono">${p.id}</td>
       <td>${p.ville}</td>
       <td>${p.surface} m²</td>
@@ -836,6 +844,22 @@ function renderGestion(){
     </tr>
   `).join('');
 
+  tbody.querySelectorAll('.photo-btn').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      tbody.querySelector(`.photo-input[data-id="${btn.dataset.id}"]`).click();
+    });
+  });
+  tbody.querySelectorAll('.photo-input').forEach(inp=>{
+    inp.addEventListener('change', async ()=>{
+      const file = inp.files[0];
+      if(!file) return;
+      const url = await uploadPhoto(file, inp.dataset.id);
+      if(!url) return;
+      const {error} = await supabaseClient.from('parcelles').update({photo_url: url}).eq('id', inp.dataset.id);
+      if(error){ alert("Erreur : "+error.message); return; }
+      await loadParcelles();
+    });
+  });
   tbody.querySelectorAll('.statut-select').forEach(sel=>{
     sel.addEventListener('change', async ()=>{
       sel.disabled = true;
@@ -854,19 +878,31 @@ function renderGestion(){
   });
 }
 
+async function uploadPhoto(file, parcelleId){
+  if(!file) return null;
+  const ext = file.name.split('.').pop();
+  const path = `${parcelleId}-${Date.now()}.${ext}`;
+  const {error} = await supabaseClient.storage.from('parcelles-photos').upload(path, file, {upsert:true});
+  if(error){ alert("Erreur upload photo : "+error.message); return null; }
+  const {data} = supabaseClient.storage.from('parcelles-photos').getPublicUrl(path);
+  return data.publicUrl;
+}
+
 document.getElementById('addParcelleBtn').addEventListener('click', async ()=>{
   if(!supabaseClient){ alert("Configure d'abord supabase-config.js (voir README.md)."); return; }
   const ville = document.getElementById('newVille').value.trim();
   const surface = Number(document.getElementById('newSurface').value);
   const prix = Number(document.getElementById('newPrix').value);
   const statut = document.getElementById('newStatut').value;
+  const photoFile = document.getElementById('newPhoto').files[0];
   if(!ville || !surface || !prix){
     alert("Merci de renseigner la ville, la surface et le prix.");
     return;
   }
   const id = "AT-" + Math.floor(1000 + Math.random()*9000);
+  const photo_url = await uploadPhoto(photoFile, id);
   const {error} = await supabaseClient.from('parcelles').insert({
-    id, ville, surface, prix, statut, gps:"—",
+    id, ville, surface, prix, statut, gps:"—", photo_url,
     description:"Nouvelle parcelle ajoutée par l'équipe de gestion, en cours de documentation complète.",
     etape_titre:true, etape_bornage:false, etape_mandataire:false, etape_notarie:false
   });
@@ -874,6 +910,7 @@ document.getElementById('addParcelleBtn').addEventListener('click', async ()=>{
   document.getElementById('newVille').value='';
   document.getElementById('newSurface').value='';
   document.getElementById('newPrix').value='';
+  document.getElementById('newPhoto').value='';
   await loadParcelles();
 });
 

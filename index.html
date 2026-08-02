@@ -1,0 +1,823 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HLM INFO PUB — Foncier vérifié pour la diaspora béninoise</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,500;9..144,600;9..144,700&family=Work+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="supabase-config.js"></script>
+<style>
+  :root{
+    --bg:#F3EEE3;
+    --bg-soft:#EAE2D0;
+    --card:#FBF8F1;
+    --ink:#1C1A15;
+    --ink-soft:#5B564A;
+    --rust:#B14A2C;
+    --rust-dark:#8C3A21;
+    --forest:#1F4A3D;
+    --forest-light:#2C6350;
+    --gold:#B9903F;
+    --line:#DCD1B6;
+    --danger:#A83232;
+    --radius:2px;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    background:var(--bg);
+    color:var(--ink);
+    font-family:'Work Sans',sans-serif;
+    -webkit-font-smoothing:antialiased;
+  }
+  h1,h2,h3,.display{
+    font-family:'Fraunces',serif;
+    font-weight:600;
+    letter-spacing:-0.01em;
+    margin:0;
+  }
+  .mono{font-family:'IBM Plex Mono',monospace;}
+  a{color:inherit;}
+  button{font-family:inherit;cursor:pointer;}
+  img,svg{display:block;}
+  .wrap{max-width:1180px;margin:0 auto;padding:0 28px;}
+  .eyebrow{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:11px;
+    letter-spacing:0.14em;
+    text-transform:uppercase;
+    color:var(--rust);
+  }
+
+  /* ---------- HEADER ---------- */
+  header{
+    position:sticky;top:0;z-index:50;
+    background:rgba(243,238,227,0.92);
+    backdrop-filter:blur(8px);
+    border-bottom:1px solid var(--line);
+  }
+  .headbar{
+    display:flex;align-items:center;justify-content:space-between;
+    padding:16px 0;
+  }
+  .logo{display:flex;align-items:baseline;gap:8px;}
+  .logo .mark{
+    font-family:'Fraunces',serif;font-weight:700;font-size:22px;
+  }
+  .logo .mark span{color:var(--rust);}
+  .logo .tag{font-size:10px;color:var(--ink-soft);font-family:'IBM Plex Mono',monospace;letter-spacing:0.06em;}
+  nav.tabs{display:flex;gap:4px;background:var(--bg-soft);padding:4px;border-radius:var(--radius);}
+  nav.tabs button{
+    border:none;background:transparent;padding:9px 16px;
+    font-size:13px;font-weight:600;color:var(--ink-soft);
+    border-radius:2px;transition:all .15s ease;
+  }
+  nav.tabs button.active{background:var(--ink);color:var(--bg);}
+  .head-actions{display:flex;align-items:center;gap:14px;}
+  .devise-btn{
+    border:1px solid var(--line);background:var(--card);
+    padding:8px 12px;font-size:12px;font-family:'IBM Plex Mono',monospace;
+    border-radius:var(--radius);display:flex;align-items:center;gap:6px;
+  }
+  .cta-btn{
+    background:var(--rust);color:#fff;border:none;padding:10px 18px;
+    font-size:13px;font-weight:600;border-radius:var(--radius);
+    display:inline-flex;align-items:center;gap:8px;
+    transition:background .15s ease;
+  }
+  .cta-btn:hover{background:var(--rust-dark);}
+  .cta-ghost{
+    background:transparent;border:1px solid var(--ink);color:var(--ink);
+    padding:10px 18px;font-size:13px;font-weight:600;border-radius:var(--radius);
+  }
+
+  section{padding:88px 0;}
+  .view{display:none;}
+  .view.active{display:block;}
+
+  /* ---------- HERO ---------- */
+  .hero{padding-top:64px;padding-bottom:64px;}
+  .hero-grid{display:grid;grid-template-columns:1.05fr 0.95fr;gap:64px;align-items:center;}
+  .hero h1{font-size:46px;line-height:1.08;margin:18px 0 22px;}
+  .hero h1 em{font-style:normal;color:var(--rust);}
+  .hero p.lead{font-size:17px;line-height:1.6;color:var(--ink-soft);max-width:46ch;margin-bottom:30px;}
+  .hero-cta{display:flex;gap:12px;margin-bottom:40px;}
+  .stat-row{display:flex;gap:34px;border-top:1px solid var(--line);padding-top:22px;}
+  .stat-row .stat b{font-family:'Fraunces',serif;font-size:26px;display:block;}
+  .stat-row .stat span{font-size:12px;color:var(--ink-soft);}
+
+  /* signature: verification chain card */
+  .chain-card{
+    background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+    padding:22px;position:relative;box-shadow:0 30px 60px -30px rgba(28,26,21,0.35);
+  }
+  .chain-card .cc-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:16px;}
+  .chain-card .cc-title{font-family:'Fraunces',serif;font-size:19px;}
+  .chain-card .cc-loc{font-size:12px;color:var(--ink-soft);margin-top:3px;}
+  .badge-verified{
+    display:inline-flex;align-items:center;gap:5px;background:#EAF2ED;
+    color:var(--forest);font-size:11px;font-weight:600;padding:5px 9px;border-radius:20px;
+  }
+  .chain-list{border-top:1px dashed var(--line);margin-top:14px;padding-top:14px;}
+  .chain-step{display:flex;gap:12px;padding:9px 0;align-items:flex-start;}
+  .chain-step .num{
+    width:22px;height:22px;border-radius:50%;flex:none;
+    display:flex;align-items:center;justify-content:center;
+    font-family:'IBM Plex Mono',monospace;font-size:10px;font-weight:600;
+    background:var(--forest);color:#fff;
+  }
+  .chain-step.pending .num{background:var(--bg-soft);color:var(--ink-soft);border:1px solid var(--line);}
+  .chain-step .txt b{display:block;font-size:13px;}
+  .chain-step .txt span{font-size:11.5px;color:var(--ink-soft);font-family:'IBM Plex Mono',monospace;}
+  .chain-card .cc-gps{
+    margin-top:16px;padding-top:14px;border-top:1px dashed var(--line);
+    display:flex;justify-content:space-between;font-size:11.5px;color:var(--ink-soft);
+  }
+
+  /* ---------- SECTION HEAD ---------- */
+  .sec-head{max-width:640px;margin-bottom:44px;}
+  .sec-head h2{font-size:32px;margin:10px 0 12px;}
+  .sec-head p{color:var(--ink-soft);font-size:15px;line-height:1.6;}
+
+  /* ---------- PROCESS ---------- */
+  .process{background:var(--ink);color:var(--bg);}
+  .process .eyebrow{color:var(--gold);}
+  .process .sec-head p{color:#C9C4B6;}
+  .process-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:0;border-top:1px solid #38352C;}
+  .p-step{padding:26px 18px 0 0;border-right:1px solid #38352C;}
+  .p-step:last-child{border-right:none;}
+  .p-step .p-num{font-family:'Fraunces',serif;font-size:30px;color:var(--rust);}
+  .p-step h3{font-size:15px;margin:14px 0 8px;font-family:'Work Sans',sans-serif;font-weight:600;}
+  .p-step p{font-size:12.5px;color:#B7B2A3;line-height:1.55;}
+
+  /* ---------- TRUST CARDS ---------- */
+  .trust-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--line);border:1px solid var(--line);}
+  .trust-card{background:var(--bg);padding:26px;}
+  .trust-card .ic{color:var(--rust);margin-bottom:14px;}
+  .trust-card h3{font-size:15px;margin-bottom:8px;font-family:'Work Sans',sans-serif;font-weight:600;}
+  .trust-card p{font-size:12.5px;color:var(--ink-soft);line-height:1.55;}
+
+  /* ---------- CATALOGUE ---------- */
+  .filter-bar{
+    display:flex;gap:10px;flex-wrap:wrap;align-items:center;
+    background:var(--card);border:1px solid var(--line);padding:14px;border-radius:var(--radius);margin-bottom:28px;
+  }
+  .filter-bar select,.filter-bar input{
+    border:1px solid var(--line);background:#fff;padding:9px 10px;font-size:13px;
+    border-radius:var(--radius);font-family:'Work Sans',sans-serif;color:var(--ink);
+  }
+  .filter-bar .count{margin-left:auto;font-size:12px;color:var(--ink-soft);font-family:'IBM Plex Mono',monospace;}
+
+  .grid-cards{display:grid;grid-template-columns:repeat(3,1fr);gap:22px;}
+  .p-card{
+    background:var(--card);border:1px solid var(--line);border-radius:var(--radius);overflow:hidden;
+    cursor:pointer;transition:transform .15s ease, box-shadow .15s ease;
+  }
+  .p-card:hover{transform:translateY(-3px);box-shadow:0 20px 40px -24px rgba(28,26,21,0.4);}
+  .p-thumb{
+    height:140px;position:relative;
+    display:flex;align-items:flex-end;padding:12px;
+  }
+  .p-thumb .p-tag{
+    background:rgba(0,0,0,0.55);color:#fff;font-size:11px;padding:4px 8px;border-radius:20px;
+    font-family:'IBM Plex Mono',monospace;
+  }
+  .p-thumb .p-status{
+    position:absolute;top:12px;right:12px;font-size:10.5px;font-weight:700;
+    padding:4px 9px;border-radius:20px;text-transform:uppercase;letter-spacing:0.04em;
+  }
+  .st-dispo{background:#EAF2ED;color:var(--forest);}
+  .st-reserve{background:#FBF0DD;color:var(--gold);}
+  .st-vendu{background:#F3E2DD;color:var(--rust-dark);}
+  .p-body{padding:16px;}
+  .p-body h3{font-size:16px;font-family:'Fraunces',serif;margin-bottom:6px;}
+  .p-meta{display:flex;gap:14px;font-size:11.5px;color:var(--ink-soft);margin-bottom:12px;}
+  .p-price{
+    display:flex;justify-content:space-between;align-items:baseline;
+    border-top:1px solid var(--line);padding-top:12px;
+  }
+  .p-price b{font-family:'IBM Plex Mono',monospace;font-size:15px;}
+  .p-price span{font-size:11px;color:var(--ink-soft);}
+
+  /* ---------- MODAL ---------- */
+  .overlay{
+    position:fixed;inset:0;background:rgba(20,18,14,0.6);
+    display:none;align-items:center;justify-content:center;z-index:100;padding:24px;
+  }
+  .overlay.active{display:flex;}
+  .modal{
+    background:var(--bg);max-width:840px;width:100%;max-height:88vh;overflow-y:auto;
+    border-radius:var(--radius);border:1px solid var(--line);
+  }
+  .modal-head{
+    height:180px;position:relative;padding:22px;display:flex;flex-direction:column;justify-content:flex-end;
+  }
+  .modal-close{
+    position:absolute;top:16px;right:16px;width:32px;height:32px;border-radius:50%;
+    background:rgba(255,255,255,0.9);border:none;display:flex;align-items:center;justify-content:center;
+  }
+  .modal-body{padding:26px;display:grid;grid-template-columns:1.3fr 1fr;gap:30px;}
+  .modal-body h2{font-size:24px;margin-bottom:4px;}
+  .modal-body .loc{color:var(--ink-soft);font-size:13px;margin-bottom:18px;}
+  .modal-body .desc{font-size:13.5px;line-height:1.7;color:var(--ink-soft);margin-bottom:20px;}
+  .meta-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:20px;}
+  .meta-item{background:var(--card);border:1px solid var(--line);padding:12px;border-radius:var(--radius);}
+  .meta-item span{font-size:10.5px;color:var(--ink-soft);text-transform:uppercase;letter-spacing:0.05em;}
+  .meta-item b{display:block;font-family:'IBM Plex Mono',monospace;font-size:14px;margin-top:4px;}
+  .side-box{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:18px;height:fit-content;}
+  .side-box .price-big{font-family:'Fraunces',serif;font-size:26px;margin-bottom:2px;}
+  .side-box .price-alt{font-size:12px;color:var(--ink-soft);font-family:'IBM Plex Mono',monospace;margin-bottom:18px;}
+  .side-box button{width:100%;margin-bottom:10px;justify-content:center;}
+  .side-box .note{font-size:11.5px;color:var(--ink-soft);line-height:1.5;margin-top:8px;}
+
+  /* ---------- GESTION ---------- */
+  .stats-row{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--line);border:1px solid var(--line);margin-bottom:32px;}
+  .stat-box{background:var(--card);padding:20px;}
+  .stat-box .n{font-family:'Fraunces',serif;font-size:28px;}
+  .stat-box .l{font-size:11.5px;color:var(--ink-soft);margin-top:4px;}
+
+  .gestion-layout{display:grid;grid-template-columns:1fr 320px;gap:28px;}
+  table.g-table{width:100%;border-collapse:collapse;background:var(--card);border:1px solid var(--line);}
+  table.g-table th{
+    text-align:left;font-size:10.5px;text-transform:uppercase;letter-spacing:0.05em;
+    color:var(--ink-soft);padding:10px 12px;border-bottom:1px solid var(--line);background:var(--bg-soft);
+  }
+  table.g-table td{padding:11px 12px;border-bottom:1px solid var(--line);font-size:13px;vertical-align:middle;}
+  table.g-table tr:last-child td{border-bottom:none;}
+  table.g-table select{
+    border:1px solid var(--line);border-radius:var(--radius);padding:5px 7px;font-size:12px;background:#fff;
+  }
+  .icon-btn{background:none;border:none;color:var(--ink-soft);padding:4px;border-radius:4px;}
+  .icon-btn:hover{color:var(--danger);background:#F3E2DD;}
+
+  .add-form{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:18px;}
+  .add-form h3{font-size:15px;margin-bottom:14px;font-family:'Fraunces',serif;}
+  .add-form label{display:block;font-size:11px;color:var(--ink-soft);margin-bottom:5px;margin-top:12px;text-transform:uppercase;letter-spacing:0.04em;}
+  .add-form input,.add-form select{
+    width:100%;border:1px solid var(--line);border-radius:var(--radius);padding:9px 10px;font-size:13px;background:#fff;
+  }
+  .add-form button{width:100%;margin-top:18px;justify-content:center;}
+
+  footer{background:var(--ink);color:#C9C4B6;padding:50px 0 26px;}
+  .foot-grid{display:grid;grid-template-columns:2fr 1fr 1fr;gap:40px;margin-bottom:36px;}
+  footer h4{color:#fff;font-size:12px;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:14px;font-family:'Work Sans',sans-serif;}
+  footer p{font-size:13px;line-height:1.7;color:#A8A395;max-width:34ch;}
+  footer ul{list-style:none;padding:0;margin:0;}
+  footer li{font-size:13px;margin-bottom:9px;color:#B7B2A3;}
+  .foot-bottom{border-top:1px solid #38352C;padding-top:20px;font-size:11.5px;color:#7C7869;display:flex;justify-content:space-between;}
+
+  .whatsapp-fab{
+    position:fixed;bottom:22px;right:22px;background:var(--forest);color:#fff;
+    width:52px;height:52px;border-radius:50%;display:flex;align-items:center;justify-content:center;
+    box-shadow:0 12px 24px -8px rgba(31,74,61,0.6);z-index:60;border:none;
+  }
+
+  @media(max-width:960px){
+    .hero-grid{grid-template-columns:1fr;}
+    .process-grid{grid-template-columns:repeat(2,1fr);}
+    .p-step{border-right:none;border-bottom:1px solid #38352C;padding-bottom:20px;}
+    .trust-grid{grid-template-columns:repeat(2,1fr);}
+    .grid-cards{grid-template-columns:repeat(2,1fr);}
+    .modal-body{grid-template-columns:1fr;}
+    .gestion-layout{grid-template-columns:1fr;}
+    .foot-grid{grid-template-columns:1fr;}
+    nav.tabs{display:none;}
+  }
+  @media(max-width:640px){
+    .grid-cards{grid-template-columns:1fr;}
+    .stats-row{grid-template-columns:repeat(2,1fr);}
+    .trust-grid{grid-template-columns:1fr;}
+    .process-grid{grid-template-columns:1fr;}
+    .hero h1{font-size:32px;}
+  }
+  @media (prefers-reduced-motion: reduce){
+    *{transition:none !important;}
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap headbar">
+    <div class="logo">
+      <div class="mark">HLM <span>INFO PUB</span></div>
+      <div class="tag">FONCIER VÉRIFIÉ · BÉNIN</div>
+    </div>
+    <nav class="tabs">
+      <button class="tab-btn active" data-view="accueil">Accueil</button>
+      <button class="tab-btn" data-view="catalogue">Catalogue</button>
+      <button class="tab-btn" data-view="gestion">Gestion</button>
+    </nav>
+    <div class="head-actions">
+      <button class="devise-btn" id="deviseBtn">1 200 000 FCFA <span id="deviseAlt">≈ 1 829 €</span></button>
+      <button class="cta-btn" data-view="catalogue">Voir les parcelles</button>
+    </div>
+  </div>
+</header>
+
+<!-- ================= ACCUEIL ================= -->
+<div class="view active" id="view-accueil">
+
+  <section class="hero">
+    <div class="wrap hero-grid">
+      <div>
+        <div class="eyebrow">Depuis Paris, Montréal, Boston ou Libreville</div>
+        <h1>Achetez une parcelle au Bénin <em>sans jamais vous faire avoir</em> à distance.</h1>
+        <p class="lead">HLM INFO PUB vérifie chaque titre foncier, mandate un agent local pour vous représenter, et vous accompagne du premier appel vidéo jusqu'à la remise de vos documents authentifiés — où que vous soyez.</p>
+        <div class="hero-cta">
+          <button class="cta-btn" data-view="catalogue">Explorer le catalogue</button>
+          <button class="cta-ghost" data-view="gestion">Espace gestion</button>
+        </div>
+        <div class="stat-row">
+          <div class="stat"><b>312</b><span>parcelles vérifiées</span></div>
+          <div class="stat"><b>0</b><span>litige de titre en 4 ans</span></div>
+          <div class="stat"><b>27</b><span>pays de résidence clients</span></div>
+        </div>
+      </div>
+
+      <div class="chain-card">
+        <div class="cc-top">
+          <div>
+            <div class="cc-title">Parcelle Réf. AT-0143</div>
+            <div class="cc-loc">Abomey-Calavi, Zinvié — 600 m²</div>
+          </div>
+          <span class="badge-verified">✓ Titre vérifié</span>
+        </div>
+        <div class="chain-list">
+          <div class="chain-step">
+            <div class="num">✓</div>
+            <div class="txt"><b>Titre foncier authentifié</b><span>Conservation foncière — validé</span></div>
+          </div>
+          <div class="chain-step">
+            <div class="num">✓</div>
+            <div class="txt"><b>Bornage contradictoire</b><span>Géomètre agréé — validé</span></div>
+          </div>
+          <div class="chain-step">
+            <div class="num">✓</div>
+            <div class="txt"><b>Mandataire local désigné</b><span>Agent HLM INFO PUB — actif</span></div>
+          </div>
+          <div class="chain-step pending">
+            <div class="num">4</div>
+            <div class="txt"><b>Acte notarié</b><span>En attente de signature</span></div>
+          </div>
+        </div>
+        <div class="cc-gps">
+          <span>GPS 6.4489° N, 2.3389° E</span>
+          <span>Mis à jour il y a 2 jours</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="process">
+    <div class="wrap">
+      <div class="sec-head">
+        <div class="eyebrow">Le parcours</div>
+        <h2>Cinq étapes, zéro déplacement obligatoire</h2>
+        <p>Un processus séquentiel pensé pour quelqu'un qui ne peut pas se rendre sur place à chaque décision.</p>
+      </div>
+      <div class="process-grid">
+        <div class="p-step"><div class="p-num">01</div><h3>Sélection à distance</h3><p>Parcourez le catalogue, filtrez par ville, budget et statut, et échangez en visio avec un conseiller.</p></div>
+        <div class="p-step"><div class="p-num">02</div><h3>Vérification du titre</h3><p>Nos juristes contrôlent l'origine de propriété auprès de la conservation foncière avant toute réservation.</p></div>
+        <div class="p-step"><div class="p-num">03</div><h3>Mandataire &amp; procuration</h3><p>Un agent local vous représente sur place via une procuration notariée que vous signez à distance.</p></div>
+        <div class="p-step"><div class="p-num">04</div><h3>Paiement sécurisé</h3><p>Virement international ou mobile money, fonds bloqués jusqu'à la validation de l'acte.</p></div>
+        <div class="p-step"><div class="p-num">05</div><h3>Suivi &amp; documents</h3><p>Recevez vos actes scannés et suivez l'état de votre terrain par photo et vidéo à tout moment.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="wrap">
+      <div class="sec-head">
+        <div class="eyebrow">Pourquoi la diaspora nous fait confiance</div>
+        <h2>Conçu pour l'inquiétude n°1 : acheter un terrain qu'on ne voit pas</h2>
+      </div>
+      <div class="trust-grid">
+        <div class="trust-card">
+          <div class="ic"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 3l7 3v6c0 4.4-2.9 7.9-7 9-4.1-1.1-7-4.6-7-9V6l7-3z"/><path d="M9.2 12.2l2 2 3.6-4"/></svg></div>
+          <h3>Garantie anti-litige</h3>
+          <p>Remboursement intégral si un vice de titre est découvert après l'achat, sur les 24 premiers mois.</p>
+        </div>
+        <div class="trust-card">
+          <div class="ic"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="8" r="3.4"/><path d="M5 20c1.2-4 4-6 7-6s5.8 2 7 6"/></svg></div>
+          <h3>Mandataire local dédié</h3>
+          <p>Un agent HLM INFO PUB assermenté suit chaque dossier sur place, de la visite à la remise des clés.</p>
+        </div>
+        <div class="trust-card">
+          <div class="ic"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="6.5" width="12" height="11" rx="1.4"/><path d="M15 10.5l6-3v9l-6-3"/></svg></div>
+          <h3>Visite vidéo en direct</h3>
+          <p>Demandez une visite filmée en temps réel du terrain, à l'heure qui vous convient depuis l'étranger.</p>
+        </div>
+        <div class="trust-card">
+          <div class="ic"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="8.2"/><path d="M12 7.5v9M9.3 9.6c0-1.2 1.2-2.1 2.7-2.1s2.7.9 2.7 2c0 2.7-5.4 1.3-5.4 4 0 1.1 1.2 2 2.7 2s2.7-.9 2.7-2"/></svg></div>
+          <h3>Paiement multi-devises</h3>
+          <p>Réglez en euros, dollars ou FCFA, par virement SEPA, carte ou mobile money, fonds sécurisés en séquestre.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- ================= CATALOGUE ================= -->
+<div class="view" id="view-catalogue">
+  <section style="padding-top:44px;">
+    <div class="wrap">
+      <div class="sec-head">
+        <div class="eyebrow">Catalogue</div>
+        <h2>Parcelles disponibles</h2>
+        <p>Toutes les annonces affichées ont passé la vérification de titre HLM INFO PUB.</p>
+      </div>
+
+      <div class="filter-bar">
+        <select id="fVille">
+          <option value="">Toutes les villes</option>
+        </select>
+        <select id="fStatut">
+          <option value="">Tous statuts</option>
+          <option value="dispo">Disponible</option>
+          <option value="reserve">Réservé</option>
+          <option value="vendu">Vendu</option>
+        </select>
+        <select id="fPrix">
+          <option value="">Tous budgets</option>
+          <option value="0-5000000">Moins de 5M FCFA</option>
+          <option value="5000000-15000000">5M – 15M FCFA</option>
+          <option value="15000000-999999999">Plus de 15M FCFA</option>
+        </select>
+        <span class="count" id="resultCount"></span>
+      </div>
+
+      <div class="grid-cards" id="catalogueGrid"></div>
+    </div>
+  </section>
+</div>
+
+<!-- ================= GESTION ================= -->
+<div class="view" id="view-gestion">
+  <section style="padding-top:44px;">
+    <div class="wrap">
+      <div class="sec-head">
+        <div class="eyebrow">Espace interne</div>
+        <h2>Gestion du portefeuille de parcelles</h2>
+        <p>Ajoutez une parcelle, mettez à jour son statut ou suivez la valeur globale du portefeuille.</p>
+      </div>
+
+      <div id="loginBox" style="max-width:360px;margin:20px 0;padding:24px;border:1px solid rgba(255,255,255,0.15);border-radius:12px;">
+        <h3 style="margin-top:0;">Connexion requise</h3>
+        <label>Email</label>
+        <input type="email" id="loginEmail" placeholder="ton@email.com" style="display:block;width:100%;margin:6px 0 14px;padding:8px;">
+        <label>Mot de passe</label>
+        <input type="password" id="loginPassword" placeholder="••••••••" style="display:block;width:100%;margin:6px 0 14px;padding:8px;">
+        <button class="cta-btn" id="loginBtn">Se connecter</button>
+        <p id="loginError" style="color:#D45; font-size:13px; margin-top:10px;"></p>
+      </div>
+
+      <div id="gestionContent" style="display:none;">
+      <div style="text-align:right; margin-bottom:10px;">
+        <button class="cta-ghost" id="logoutBtn">Se déconnecter</button>
+      </div>
+      <div class="stats-row">
+        <div class="stat-box"><div class="n" id="statTotal">0</div><div class="l">Parcelles au catalogue</div></div>
+        <div class="stat-box"><div class="n" id="statDispo">0</div><div class="l">Disponibles</div></div>
+        <div class="stat-box"><div class="n" id="statVendu">0</div><div class="l">Vendues</div></div>
+        <div class="stat-box"><div class="n" id="statValeur">0</div><div class="l">Valeur totale (M FCFA)</div></div>
+      </div>
+
+      <div class="gestion-layout">
+        <table class="g-table">
+          <thead>
+            <tr><th>Référence</th><th>Ville</th><th>Surface</th><th>Prix FCFA</th><th>Statut</th><th></th></tr>
+          </thead>
+          <tbody id="gestionTbody"></tbody>
+        </table>
+
+        <div class="add-form">
+          <h3>Ajouter une parcelle</h3>
+          <label>Ville / quartier</label>
+          <input type="text" id="newVille" placeholder="ex. Ouidah, Pahou">
+          <label>Surface (m²)</label>
+          <input type="number" id="newSurface" placeholder="ex. 500">
+          <label>Prix (FCFA)</label>
+          <input type="number" id="newPrix" placeholder="ex. 8000000">
+          <label>Statut</label>
+          <select id="newStatut">
+            <option value="dispo">Disponible</option>
+            <option value="reserve">Réservé</option>
+            <option value="vendu">Vendu</option>
+          </select>
+          <button class="cta-btn" id="addParcelleBtn"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M12 5v14M5 12h14"/></svg> Ajouter au catalogue</button>
+        </div>
+      </div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- ================= MODAL ================= -->
+<div class="overlay" id="modalOverlay">
+  <div class="modal" id="modalContent"></div>
+</div>
+
+<a class="whatsapp-fab" href="https://wa.me/22900000000" target="_blank" title="Discuter sur WhatsApp"><svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.5 2 2 6.5 2 12c0 1.9.5 3.6 1.4 5.2L2 22l4.9-1.3C8.5 21.5 10.2 22 12 22c5.5 0 10-4.5 10-10S17.5 2 12 2zm5.6 14.2c-.2.7-1.4 1.3-2 1.4-.5.1-1.1.1-1.8-.1-.4-.1-1-.3-1.7-.6-3-1.3-4.9-4.3-5.1-4.5-.1-.2-1.2-1.6-1.2-3s.7-2.1 1-2.4c.3-.3.6-.4.8-.4h.6c.2 0 .4 0 .6.5.2.5.8 1.9.8 2 .1.2.1.4 0 .6-.1.2-.2.3-.3.5-.2.2-.3.3-.5.5-.2.2-.3.4-.1.7.2.3.9 1.4 1.9 2.3 1.3 1.2 2.4 1.5 2.7 1.7.3.2.5.1.7-.1.2-.2.8-.9 1-1.2.2-.3.4-.3.7-.2.3.1 1.7.8 2 .9.3.2.5.2.6.4.1.2.1 1-.1 1.7z"/></svg></a>
+
+<footer>
+  <div class="wrap">
+    <div class="foot-grid">
+      <div>
+        <h4>HLM INFO PUB</h4>
+        <p>Plateforme d'achat, de vente et de gestion de parcelles au Bénin, pensée pour les Béninois de l'extérieur qui investissent au pays sans pouvoir se déplacer à chaque étape.</p>
+      </div>
+      <div>
+        <h4>Plateforme</h4>
+        <ul>
+          <li>Catalogue</li>
+          <li>Comment ça marche</li>
+          <li>Devenir mandataire local</li>
+          <li>Espace gestion</li>
+        </ul>
+      </div>
+      <div>
+        <h4>Contact</h4>
+        <ul>
+          <li>Cotonou, Bénin</li>
+          <li>WhatsApp : +229 00 00 00 00</li>
+          <li>contact@hlminfopub.bj</li>
+        </ul>
+      </div>
+    </div>
+    <div class="foot-bottom">
+      <span>© 2026 HLM INFO PUB — Démonstration logicielle.</span>
+      <span>Fait pour la diaspora béninoise</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+/* ---------------- CONNEXION SUPABASE ---------------- */
+const configOk = typeof SUPABASE_URL !== 'undefined' && SUPABASE_URL.indexOf('xxxxxxxxxxxx') === -1;
+let supabaseClient = null;
+if (configOk) {
+  supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+} else {
+  document.addEventListener('DOMContentLoaded', () => {
+    const w = document.createElement('div');
+    w.style.cssText = "position:fixed;top:0;left:0;right:0;z-index:200;background:#A83232;color:#fff;padding:10px 16px;font-family:sans-serif;font-size:13px;text-align:center;";
+    w.textContent = "⚠️ Supabase n'est pas configuré : ouvre supabase-config.js et colle ton URL + ta clé anon (voir README.md).";
+    document.body.prepend(w);
+  });
+}
+
+/* couleurs de vignette assignées par ville (déterministe, pas de dépendance externe) */
+const grads = ["linear-gradient(135deg,#2C6350,#1F4A3D)","linear-gradient(135deg,#B14A2C,#8C3A21)","linear-gradient(135deg,#B9903F,#8C6E2A)","linear-gradient(135deg,#1F4A3D,#123329)","linear-gradient(135deg,#5B564A,#1C1A15)"];
+function gradFor(id){ let h=0; for(const c of id) h+=c.charCodeAt(0); return grads[h%grads.length]; }
+
+let parcelles = []; // rempli depuis Supabase
+
+const stepLabels = [
+  ["Titre foncier authentifié","Conservation foncière"],
+  ["Bornage contradictoire","Géomètre agréé"],
+  ["Mandataire local désigné","Agent HLM INFO PUB"],
+  ["Acte notarié","Signature finale"]
+];
+function stepsOf(p){ return [p.etape_titre, p.etape_bornage, p.etape_mandataire, p.etape_notarie]; }
+
+/* ---------------- DEVISES ---------------- */
+const rates = {FCFA:{label:"FCFA",rate:1}, EUR:{label:"€",rate:1/655.96}, USD:{label:"$",rate:1/605.5}};
+let devise = "EUR";
+function fmt(n){ return Number(n).toLocaleString('fr-FR'); }
+function convert(fcfa){ return fmt(Math.round(fcfa*rates[devise].rate)); }
+document.getElementById('deviseBtn').addEventListener('click', ()=>{
+  devise = devise==="EUR" ? "USD" : (devise==="USD" ? "FCFA" : "EUR");
+  document.getElementById('deviseAlt').textContent = devise==="FCFA" ? "" : `≈ ${convert(1200000)} ${rates[devise].label}`;
+  renderCatalogue();
+});
+document.getElementById('deviseAlt').textContent = `≈ ${convert(1200000)} ${rates['EUR'].label}`;
+
+/* ---------------- NAVIGATION ---------------- */
+document.querySelectorAll('[data-view]').forEach(btn=>{
+  btn.addEventListener('click', ()=> switchView(btn.dataset.view));
+});
+function switchView(name){
+  document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
+  document.getElementById('view-'+name).classList.add('active');
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.toggle('active', b.dataset.view===name));
+  if(name==='catalogue') renderCatalogue();
+  if(name==='gestion'){ checkAuthAndRenderGestion(); }
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+/* ---------------- AUTHENTIFICATION ---------------- */
+async function checkAuthAndRenderGestion(){
+  if(!supabaseClient) return;
+  const { data: { session } } = await supabaseClient.auth.getSession();
+  if(session){
+    document.getElementById('loginBox').style.display = 'none';
+    document.getElementById('gestionContent').style.display = 'block';
+    renderGestion();
+  } else {
+    document.getElementById('loginBox').style.display = 'block';
+    document.getElementById('gestionContent').style.display = 'none';
+  }
+}
+document.getElementById('loginBtn').addEventListener('click', async ()=>{
+  const email = document.getElementById('loginEmail').value.trim();
+  const password = document.getElementById('loginPassword').value;
+  const errBox = document.getElementById('loginError');
+  errBox.textContent = '';
+  if(!supabaseClient) return;
+  const { error } = await supabaseClient.auth.signInWithPassword({ email, password });
+  if(error){
+    errBox.textContent = "Connexion refusée : vérifie l'email et le mot de passe.";
+    return;
+  }
+  checkAuthAndRenderGestion();
+});
+document.getElementById('logoutBtn').addEventListener('click', async ()=>{
+  if(!supabaseClient) return;
+  await supabaseClient.auth.signOut();
+  checkAuthAndRenderGestion();
+});
+
+/* ---------------- CHARGEMENT DEPUIS SUPABASE ---------------- */
+async function loadParcelles(){
+  if(!supabaseClient) return;
+  const {data, error} = await supabaseClient.from('parcelles').select('*').order('created_at',{ascending:false});
+  if(error){ console.error(error); alert("Erreur de chargement des parcelles : "+error.message); return; }
+  parcelles = data || [];
+  populateVilleFilter();
+  renderCatalogue();
+  renderGestion();
+}
+
+/* ---------------- CATALOGUE ---------------- */
+function populateVilleFilter(){
+  const sel = document.getElementById('fVille');
+  const current = sel.value;
+  const villes = [...new Set(parcelles.map(p=>p.ville.split(',')[0]))];
+  sel.innerHTML = '<option value="">Toutes les villes</option>' + villes.map(v=>`<option value="${v}">${v}</option>`).join('');
+  sel.value = current;
+}
+function statusLabel(s){ return s==='dispo'?'Disponible': s==='reserve'?'Réservé':'Vendu'; }
+function statusClass(s){ return s==='dispo'?'st-dispo': s==='reserve'?'st-reserve':'st-vendu'; }
+
+function renderCatalogue(){
+  const ville = document.getElementById('fVille').value;
+  const statut = document.getElementById('fStatut').value;
+  const prixRange = document.getElementById('fPrix').value;
+  let list = parcelles.filter(p=>{
+    if(ville && !p.ville.startsWith(ville)) return false;
+    if(statut && p.statut!==statut) return false;
+    if(prixRange){
+      const [min,max] = prixRange.split('-').map(Number);
+      if(p.prix<min || p.prix>max) return false;
+    }
+    return true;
+  });
+  document.getElementById('resultCount').textContent = `${list.length} parcelle${list.length>1?'s':''}`;
+  const grid = document.getElementById('catalogueGrid');
+  grid.innerHTML = list.map(p=>`
+    <div class="p-card" data-id="${p.id}">
+      <div class="p-thumb" style="background:${gradFor(p.id)}">
+        <span class="p-status ${statusClass(p.statut)}">${statusLabel(p.statut)}</span>
+        <span class="p-tag">${p.ville.split(',')[0]}</span>
+      </div>
+      <div class="p-body">
+        <h3>Réf. ${p.id}</h3>
+        <div class="p-meta">
+          <span>${p.surface} m²</span>
+          <span>${stepsOf(p).filter(Boolean).length}/4 vérifications</span>
+        </div>
+        <div class="p-price">
+          <div><b>${fmt(p.prix)}</b><span> FCFA</span></div>
+          <span>${devise!=='FCFA' ? '≈ '+convert(p.prix)+' '+rates[devise].label : ''}</span>
+        </div>
+      </div>
+    </div>
+  `).join('') || '<p style="color:var(--ink-soft);font-size:14px;">Aucune parcelle ne correspond à ces critères.</p>';
+
+  grid.querySelectorAll('.p-card').forEach(card=>{
+    card.addEventListener('click', ()=> openModal(card.dataset.id));
+  });
+}
+['fVille','fStatut','fPrix'].forEach(id=> document.getElementById(id).addEventListener('change', renderCatalogue));
+
+/* ---------------- MODAL ---------------- */
+function openModal(id){
+  const p = parcelles.find(x=>x.id===id);
+  if(!p) return;
+  const steps = stepsOf(p);
+  const stepsHtml = steps.map((done,i)=>`
+    <div class="chain-step ${done?'':'pending'}">
+      <div class="num">${done?'✓':(i+1)}</div>
+      <div class="txt"><b>${stepLabels[i][0]}</b><span>${stepLabels[i][1]} — ${done?'validé':'en attente'}</span></div>
+    </div>
+  `).join('');
+
+  document.getElementById('modalContent').innerHTML = `
+    <div class="modal-head" style="background:${gradFor(p.id)}">
+      <button class="modal-close" id="closeModalBtn">✕</button>
+      <span class="badge-verified" style="background:rgba(255,255,255,0.9);">${steps.filter(Boolean).length}/4 étapes validées</span>
+    </div>
+    <div class="modal-body">
+      <div>
+        <h2>Réf. ${p.id}</h2>
+        <div class="loc">${p.ville} · ${p.surface} m² · GPS ${p.gps||'—'}</div>
+        <p class="desc">${p.description||''}</p>
+        <div class="meta-grid">
+          <div class="meta-item"><span>Surface</span><b>${p.surface} m²</b></div>
+          <div class="meta-item"><span>Statut</span><b>${statusLabel(p.statut)}</b></div>
+        </div>
+        <div class="chain-list">${stepsHtml}</div>
+      </div>
+      <div class="side-box">
+        <div class="price-big mono">${fmt(p.prix)} FCFA</div>
+        <div class="price-alt">≈ ${fmt(Math.round(p.prix*rates['EUR'].rate))} € · ≈ ${fmt(Math.round(p.prix*rates['USD'].rate))} $</div>
+        <button class="cta-btn"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 8l9 6 9-6"/><rect x="3" y="5" width="18" height="14" rx="1.5"/></svg> Contacter un conseiller</button>
+        <button class="cta-ghost">Demander une visite vidéo</button>
+        <div class="note">Une procuration notariée vous permet de mandater notre agent local pour signer en votre nom, sans déplacement.</div>
+      </div>
+    </div>
+  `;
+  document.getElementById('closeModalBtn').addEventListener('click', closeModal);
+  document.getElementById('modalOverlay').classList.add('active');
+}
+function closeModal(){ document.getElementById('modalOverlay').classList.remove('active'); }
+document.getElementById('modalOverlay').addEventListener('click', e=>{
+  if(e.target.id==='modalOverlay') closeModal();
+});
+
+/* ---------------- GESTION ---------------- */
+function renderGestion(){
+  document.getElementById('statTotal').textContent = parcelles.length;
+  document.getElementById('statDispo').textContent = parcelles.filter(p=>p.statut==='dispo').length;
+  document.getElementById('statVendu').textContent = parcelles.filter(p=>p.statut==='vendu').length;
+  const valeur = parcelles.reduce((a,p)=>a+Number(p.prix),0)/1000000;
+  document.getElementById('statValeur').textContent = valeur.toFixed(1);
+
+  const tbody = document.getElementById('gestionTbody');
+  tbody.innerHTML = parcelles.map(p=>`
+    <tr data-id="${p.id}">
+      <td class="mono">${p.id}</td>
+      <td>${p.ville}</td>
+      <td>${p.surface} m²</td>
+      <td class="mono">${fmt(p.prix)}</td>
+      <td>
+        <select class="statut-select" data-id="${p.id}">
+          <option value="dispo" ${p.statut==='dispo'?'selected':''}>Disponible</option>
+          <option value="reserve" ${p.statut==='reserve'?'selected':''}>Réservé</option>
+          <option value="vendu" ${p.statut==='vendu'?'selected':''}>Vendu</option>
+        </select>
+      </td>
+      <td><button class="icon-btn del-btn" data-id="${p.id}" title="Supprimer"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 7h16M9 7V5a1 1 0 011-1h4a1 1 0 011 1v2m2 0l-1 13a1 1 0 01-1 1H8a1 1 0 01-1-1L6 7h12z"/></svg></button></td>
+    </tr>
+  `).join('');
+
+  tbody.querySelectorAll('.statut-select').forEach(sel=>{
+    sel.addEventListener('change', async ()=>{
+      sel.disabled = true;
+      const {error} = await supabaseClient.from('parcelles').update({statut: sel.value}).eq('id', sel.dataset.id);
+      if(error){ alert("Erreur : "+error.message); sel.disabled=false; return; }
+      await loadParcelles();
+    });
+  });
+  tbody.querySelectorAll('.del-btn').forEach(btn=>{
+    btn.addEventListener('click', async ()=>{
+      if(!confirm(`Supprimer la parcelle ${btn.dataset.id} ?`)) return;
+      const {error} = await supabaseClient.from('parcelles').delete().eq('id', btn.dataset.id);
+      if(error){ alert("Erreur : "+error.message); return; }
+      await loadParcelles();
+    });
+  });
+}
+
+document.getElementById('addParcelleBtn').addEventListener('click', async ()=>{
+  if(!supabaseClient){ alert("Configure d'abord supabase-config.js (voir README.md)."); return; }
+  const ville = document.getElementById('newVille').value.trim();
+  const surface = Number(document.getElementById('newSurface').value);
+  const prix = Number(document.getElementById('newPrix').value);
+  const statut = document.getElementById('newStatut').value;
+  if(!ville || !surface || !prix){
+    alert("Merci de renseigner la ville, la surface et le prix.");
+    return;
+  }
+  const id = "AT-" + Math.floor(1000 + Math.random()*9000);
+  const {error} = await supabaseClient.from('parcelles').insert({
+    id, ville, surface, prix, statut, gps:"—",
+    description:"Nouvelle parcelle ajoutée par l'équipe de gestion, en cours de documentation complète.",
+    etape_titre:true, etape_bornage:false, etape_mandataire:false, etape_notarie:false
+  });
+  if(error){ alert("Erreur : "+error.message); return; }
+  document.getElementById('newVille').value='';
+  document.getElementById('newSurface').value='';
+  document.getElementById('newPrix').value='';
+  await loadParcelles();
+});
+
+/* ---------------- INIT ---------------- */
+loadParcelles();
+</script>
+</body>
+</html>

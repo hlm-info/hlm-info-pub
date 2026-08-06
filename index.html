@@ -289,7 +289,7 @@
   .side-box{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:18px;height:fit-content;}
   .side-box .price-big{font-family:'Fraunces',serif;font-size:26px;margin-bottom:2px;}
   .side-box .price-alt{font-size:12px;color:var(--ink-soft);font-family:'IBM Plex Mono',monospace;margin-bottom:18px;}
-  .side-box button{width:100%;margin-bottom:10px;justify-content:center;}
+  .side-box button, .side-box a{width:100%;margin-bottom:10px;justify-content:center;text-decoration:none;display:flex;align-items:center;}
   .side-box .note{font-size:11.5px;color:var(--ink-soft);line-height:1.5;margin-top:8px;}
 
   /* ---------- GESTION ---------- */
@@ -841,7 +841,11 @@ const i18n = {
     statloc_total:"Logements listés", statloc_dispo:"Disponibles", statloc_loue:"Loués", statloc_valeur:"Loyers cumulés (M FCFA/mois)",
     th_type:"Type", th_chambres:"Chambres", th_loyer:"Loyer/mois",
     addloc_h3:"Ajouter un logement meublé", addloc_type:"Type de bien", addloc_chambres:"Nombre de chambres",
-    addloc_loyer:"Loyer mensuel (FCFA)", addloc_equip:"Équipements inclus", addloc_btn:"Ajouter le logement"
+    addloc_loyer:"Loyer mensuel (FCFA)", addloc_equip:"Équipements inclus", addloc_btn:"Ajouter le logement",
+    msg_contact_parcelle:(p)=> `Bonjour, je suis intéressé(e) par la parcelle Réf. ${p.id} à ${p.ville} (${fmt(p.prix)} FCFA). Pouvez-vous me donner plus d'informations ?`,
+    msg_visite_parcelle:(p)=> `Bonjour, je souhaite demander une visite vidéo pour la parcelle Réf. ${p.id} à ${p.ville}.`,
+    msg_contact_location:(l)=> `Bonjour, je suis intéressé(e) par le logement Réf. ${l.id} à ${l.ville} (${fmt(l.loyer)} FCFA/mois). Pouvez-vous me donner plus d'informations ?`,
+    msg_visite_location:(l)=> `Bonjour, je souhaite demander une visite vidéo pour le logement Réf. ${l.id} à ${l.ville}.`
   },
   en: {
     nav_accueil:"Home", nav_catalogue:"Listings", nav_gestion:"Management", nav_cta_voir:"View listings",
@@ -916,7 +920,11 @@ const i18n = {
     statloc_total:"Homes listed", statloc_dispo:"Available", statloc_loue:"Rented", statloc_valeur:"Combined rent (M FCFA/month)",
     th_type:"Type", th_chambres:"Bedrooms", th_loyer:"Rent/month",
     addloc_h3:"Add a furnished home", addloc_type:"Property type", addloc_chambres:"Number of bedrooms",
-    addloc_loyer:"Monthly rent (FCFA)", addloc_equip:"Included amenities", addloc_btn:"Add the home"
+    addloc_loyer:"Monthly rent (FCFA)", addloc_equip:"Included amenities", addloc_btn:"Add the home",
+    msg_contact_parcelle:(p)=> `Hello, I'm interested in plot Ref. ${p.id} in ${p.ville} (${fmt(p.prix)} FCFA). Could you give me more information?`,
+    msg_visite_parcelle:(p)=> `Hello, I'd like to request a video visit for plot Ref. ${p.id} in ${p.ville}.`,
+    msg_contact_location:(l)=> `Hello, I'm interested in the home Ref. ${l.id} in ${l.ville} (${fmt(l.loyer)} FCFA/month). Could you give me more information?`,
+    msg_visite_location:(l)=> `Hello, I'd like to request a video visit for the home Ref. ${l.id} in ${l.ville}.`
   }
 };
 let lang = localStorage.getItem('hlm_lang') || 'fr';
@@ -963,6 +971,7 @@ const rates = {FCFA:{label:"FCFA",rate:1}, EUR:{label:"€",rate:1/655.96}, USD:
 let devise = "EUR";
 function fmt(n){ return Number(n).toLocaleString('fr-FR'); }
 function convert(fcfa){ return fmt(Math.round(fcfa*rates[devise].rate)); }
+function waLink(message){ return `https://wa.me/2290195994699?text=${encodeURIComponent(message)}`; }
 document.getElementById('deviseBtn').addEventListener('click', ()=>{
   devise = devise==="EUR" ? "USD" : (devise==="USD" ? "FCFA" : "EUR");
   document.getElementById('deviseAlt').textContent = devise==="FCFA" ? "" : `≈ ${convert(1200000)} ${rates[devise].label}`;
@@ -1149,13 +1158,15 @@ function openModal(id){
       <div class="side-box">
         <div class="price-big mono">${fmt(p.prix)} FCFA</div>
         <div class="price-alt">≈ ${fmt(Math.round(p.prix*rates['EUR'].rate))} € · ≈ ${fmt(Math.round(p.prix*rates['USD'].rate))} $</div>
-        <button class="cta-btn"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 8l9 6 9-6"/><rect x="3" y="5" width="18" height="14" rx="1.5"/></svg> ${t.contacter_conseiller}</button>
-        <button class="cta-ghost">${t.visite_video}</button>
+        <button class="cta-btn" id="contactBtn" type="button"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 8l9 6 9-6"/><rect x="3" y="5" width="18" height="14" rx="1.5"/></svg> ${t.contacter_conseiller}</button>
+        <button class="cta-ghost" id="visiteBtn" type="button">${t.visite_video}</button>
         <div class="note">${t.modal_note}</div>
       </div>
     </div>
   `;
   document.getElementById('closeModalBtn').addEventListener('click', closeModal);
+  document.getElementById('contactBtn').addEventListener('click', ()=> window.open(waLink(t.msg_contact_parcelle(p)), '_blank'));
+  document.getElementById('visiteBtn').addEventListener('click', ()=> window.open(waLink(t.msg_visite_parcelle(p)), '_blank'));
   document.getElementById('modalOverlay').classList.add('active');
 }
 function closeModal(){ document.getElementById('modalOverlay').classList.remove('active'); }
@@ -1232,13 +1243,15 @@ function openLocationModal(id){
       <div class="side-box">
         <div class="price-big mono">${fmt(l.loyer)} FCFA<span style="font-size:13px;">/${t.par_mois}</span></div>
         <div class="price-alt">≈ ${fmt(Math.round(l.loyer*rates['EUR'].rate))} € · ≈ ${fmt(Math.round(l.loyer*rates['USD'].rate))} $ /${t.par_mois}</div>
-        <button class="cta-btn"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 8l9 6 9-6"/><rect x="3" y="5" width="18" height="14" rx="1.5"/></svg> ${t.loc_contacter}</button>
-        <button class="cta-ghost">${t.loc_visite}</button>
+        <button class="cta-btn" id="contactLocBtn" type="button"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 8l9 6 9-6"/><rect x="3" y="5" width="18" height="14" rx="1.5"/></svg> ${t.loc_contacter}</button>
+        <button class="cta-ghost" id="visiteLocBtn" type="button">${t.loc_visite}</button>
         <div class="note">${t.loc_modal_note}</div>
       </div>
     </div>
   `;
   document.getElementById('closeModalBtn').addEventListener('click', closeModal);
+  document.getElementById('contactLocBtn').addEventListener('click', ()=> window.open(waLink(t.msg_contact_location(l)), '_blank'));
+  document.getElementById('visiteLocBtn').addEventListener('click', ()=> window.open(waLink(t.msg_visite_location(l)), '_blank'));
   document.getElementById('modalOverlay').classList.add('active');
 }
 

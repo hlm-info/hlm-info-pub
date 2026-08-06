@@ -115,6 +115,12 @@
     padding:8px 12px;font-size:12px;font-family:'IBM Plex Mono',monospace;
     border-radius:var(--radius);display:flex;align-items:center;gap:6px;
   }
+  .lang-btn{
+    border:1px solid var(--line);background:var(--card);
+    padding:8px 10px;font-size:12px;font-family:'IBM Plex Mono',monospace;font-weight:600;
+    border-radius:var(--radius);display:flex;align-items:center;gap:6px;color:var(--ink);
+  }
+  .lang-btn .cur{color:var(--rust);}
   .cta-btn{
     background:var(--rust);color:#fff;border:none;padding:10px 18px;
     font-size:13px;font-weight:600;border-radius:var(--radius);
@@ -203,6 +209,26 @@
     border-radius:var(--radius);font-family:'Work Sans',sans-serif;color:var(--ink);
   }
   .filter-bar .count{margin-left:auto;font-size:12px;color:var(--ink-soft);font-family:'IBM Plex Mono',monospace;}
+
+  /* ---------- LOCATION MEUBLÉE ---------- */
+  .l-type-badge{
+    position:absolute;top:12px;left:12px;font-size:10.5px;font-weight:700;
+    padding:4px 9px;border-radius:20px;text-transform:uppercase;letter-spacing:0.04em;
+    background:rgba(255,255,255,0.9);color:var(--ink);
+  }
+  .equip-list{display:flex;flex-wrap:wrap;gap:6px;margin:14px 0 20px;}
+  .equip-tag{
+    background:var(--bg-soft);border:1px solid var(--line);border-radius:20px;
+    padding:5px 10px;font-size:11.5px;color:var(--ink-soft);display:flex;align-items:center;gap:5px;
+  }
+  .checkbox-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:6px;}
+  .checkbox-item{display:flex;align-items:center;gap:6px;font-size:12.5px;color:var(--ink-soft);}
+  .checkbox-item input{width:auto;}
+  .gestion-subtabs{display:flex;gap:4px;background:var(--bg-soft);padding:4px;border-radius:var(--radius);margin-bottom:24px;width:fit-content;}
+  .gestion-subtabs button{border:none;background:transparent;padding:9px 16px;font-size:13px;font-weight:600;color:var(--ink-soft);border-radius:2px;}
+  .gestion-subtabs button.active{background:var(--ink);color:var(--bg);}
+  .gestion-sub{display:none;}
+  .gestion-sub.active{display:block;}
 
   .grid-cards{display:grid;grid-template-columns:repeat(3,1fr);gap:22px;}
   .p-card{
@@ -338,16 +364,18 @@
   <div class="wrap headbar">
     <div class="logo">
       <div class="mark">HLM <span>INFO PUB</span></div>
-      <div class="tag">FONCIER VÉRIFIÉ · BÉNIN</div>
+      <div class="tag" data-i18n="logo_tag">FONCIER VÉRIFIÉ · BÉNIN</div>
     </div>
     <nav class="tabs">
-      <button class="tab-btn active" data-view="accueil">Accueil</button>
-      <button class="tab-btn" data-view="catalogue">Catalogue</button>
-      <button class="tab-btn" data-view="gestion">Gestion</button>
+      <button class="tab-btn active" data-view="accueil" data-i18n="nav_accueil">Accueil</button>
+      <button class="tab-btn" data-view="catalogue" data-i18n="nav_catalogue">Catalogue</button>
+      <button class="tab-btn" data-view="location" data-i18n="nav_location">Location</button>
+      <button class="tab-btn" data-view="gestion" data-i18n="nav_gestion">Gestion</button>
     </nav>
     <div class="head-actions">
+      <button class="lang-btn" id="langBtn" title="Changer de langue / Switch language">🌐 <span id="langFR" class="cur">FR</span>/<span id="langEN">EN</span></button>
       <button class="devise-btn" id="deviseBtn">1 200 000 FCFA <span id="deviseAlt">≈ 1 829 €</span></button>
-      <button class="cta-btn" data-view="catalogue">Voir les parcelles</button>
+      <button class="cta-btn" data-view="catalogue" data-i18n="nav_cta_voir">Voir les parcelles</button>
     </div>
   </div>
 </header>
@@ -358,49 +386,49 @@
   <section class="hero">
     <div class="wrap hero-grid">
       <div>
-        <div class="eyebrow">Depuis Paris, Montréal, Boston ou Libreville</div>
-        <h1>Achetez une parcelle au Bénin <em>sans jamais vous faire avoir</em> à distance.</h1>
-        <p class="lead">HLM INFO PUB vérifie chaque titre foncier, mandate un agent local pour vous représenter, et vous accompagne du premier appel vidéo jusqu'à la remise de vos documents authentifiés — où que vous soyez.</p>
+        <div class="eyebrow" data-i18n="hero_eyebrow">Depuis Paris, Montréal, Boston ou Libreville</div>
+        <h1 data-i18n-html="hero_h1">Achetez une parcelle au Bénin <em>sans jamais vous faire avoir</em> à distance.</h1>
+        <p class="lead" data-i18n="hero_lead">HLM INFO PUB vérifie chaque titre foncier, mandate un agent local pour vous représenter, et vous accompagne du premier appel vidéo jusqu'à la remise de vos documents authentifiés — où que vous soyez.</p>
         <div class="hero-cta">
-          <button class="cta-btn" data-view="catalogue">Explorer le catalogue</button>
-          <button class="cta-ghost" data-view="gestion">Espace gestion</button>
+          <button class="cta-btn" data-view="catalogue" data-i18n="hero_cta1">Explorer le catalogue</button>
+          <button class="cta-ghost" data-view="gestion" data-i18n="hero_cta2">Espace gestion</button>
         </div>
         <div class="stat-row">
-          <div class="stat"><b>312</b><span>parcelles vérifiées</span></div>
-          <div class="stat"><b>0</b><span>litige de titre en 4 ans</span></div>
-          <div class="stat"><b>27</b><span>pays de résidence clients</span></div>
+          <div class="stat"><b>312</b><span data-i18n="stat1">parcelles vérifiées</span></div>
+          <div class="stat"><b>0</b><span data-i18n="stat2">litige de titre en 4 ans</span></div>
+          <div class="stat"><b>27</b><span data-i18n="stat3">pays de résidence clients</span></div>
         </div>
       </div>
 
       <div class="chain-card">
         <div class="cc-top">
           <div>
-            <div class="cc-title">Parcelle Réf. AT-0143</div>
-            <div class="cc-loc">Abomey-Calavi, Zinvié — 600 m²</div>
+            <div class="cc-title" data-i18n="cc_title">Parcelle Réf. AT-0143</div>
+            <div class="cc-loc" data-i18n="cc_loc">Abomey-Calavi, Zinvié — 600 m²</div>
           </div>
-          <span class="badge-verified">✓ Titre vérifié</span>
+          <span class="badge-verified" data-i18n="cc_badge">✓ Titre vérifié</span>
         </div>
         <div class="chain-list">
           <div class="chain-step">
             <div class="num">✓</div>
-            <div class="txt"><b>Titre foncier authentifié</b><span>Conservation foncière — validé</span></div>
+            <div class="txt"><b data-i18n="cc_s1_b">Titre foncier authentifié</b><span data-i18n="cc_s1_s">Conservation foncière — validé</span></div>
           </div>
           <div class="chain-step">
             <div class="num">✓</div>
-            <div class="txt"><b>Bornage contradictoire</b><span>Géomètre agréé — validé</span></div>
+            <div class="txt"><b data-i18n="cc_s2_b">Bornage contradictoire</b><span data-i18n="cc_s2_s">Géomètre agréé — validé</span></div>
           </div>
           <div class="chain-step">
             <div class="num">✓</div>
-            <div class="txt"><b>Mandataire local désigné</b><span>Agent HLM INFO PUB — actif</span></div>
+            <div class="txt"><b data-i18n="cc_s3_b">Mandataire local désigné</b><span data-i18n="cc_s3_s">Agent HLM INFO PUB — actif</span></div>
           </div>
           <div class="chain-step pending">
             <div class="num">4</div>
-            <div class="txt"><b>Acte notarié</b><span>En attente de signature</span></div>
+            <div class="txt"><b data-i18n="cc_s4_b">Acte notarié</b><span data-i18n="cc_s4_s">En attente de signature</span></div>
           </div>
         </div>
         <div class="cc-gps">
           <span>GPS 6.4489° N, 2.3389° E</span>
-          <span>Mis à jour il y a 2 jours</span>
+          <span data-i18n="cc_updated">Mis à jour il y a 2 jours</span>
         </div>
       </div>
     </div>
@@ -409,16 +437,16 @@
   <section class="process">
     <div class="wrap">
       <div class="sec-head">
-        <div class="eyebrow">Le parcours</div>
-        <h2>Cinq étapes, zéro déplacement obligatoire</h2>
-        <p>Un processus séquentiel pensé pour quelqu'un qui ne peut pas se rendre sur place à chaque décision.</p>
+        <div class="eyebrow" data-i18n="proc_eyebrow">Le parcours</div>
+        <h2 data-i18n="proc_h2">Cinq étapes, zéro déplacement obligatoire</h2>
+        <p data-i18n="proc_p">Un processus séquentiel pensé pour quelqu'un qui ne peut pas se rendre sur place à chaque décision.</p>
       </div>
       <div class="process-grid">
-        <div class="p-step"><div class="p-num">01</div><h3>Sélection à distance</h3><p>Parcourez le catalogue, filtrez par ville, budget et statut, et échangez en visio avec un conseiller.</p></div>
-        <div class="p-step"><div class="p-num">02</div><h3>Vérification du titre</h3><p>Nos juristes contrôlent l'origine de propriété auprès de la conservation foncière avant toute réservation.</p></div>
-        <div class="p-step"><div class="p-num">03</div><h3>Mandataire &amp; procuration</h3><p>Un agent local vous représente sur place via une procuration notariée que vous signez à distance.</p></div>
-        <div class="p-step"><div class="p-num">04</div><h3>Paiement sécurisé</h3><p>Virement international ou mobile money, fonds bloqués jusqu'à la validation de l'acte.</p></div>
-        <div class="p-step"><div class="p-num">05</div><h3>Suivi &amp; documents</h3><p>Recevez vos actes scannés et suivez l'état de votre terrain par photo et vidéo à tout moment.</p></div>
+        <div class="p-step"><div class="p-num">01</div><h3 data-i18n="proc1_h">Sélection à distance</h3><p data-i18n="proc1_p">Parcourez le catalogue, filtrez par ville, budget et statut, et échangez en visio avec un conseiller.</p></div>
+        <div class="p-step"><div class="p-num">02</div><h3 data-i18n="proc2_h">Vérification du titre</h3><p data-i18n="proc2_p">Nos juristes contrôlent l'origine de propriété auprès de la conservation foncière avant toute réservation.</p></div>
+        <div class="p-step"><div class="p-num">03</div><h3 data-i18n="proc3_h">Mandataire &amp; procuration</h3><p data-i18n="proc3_p">Un agent local vous représente sur place via une procuration notariée que vous signez à distance.</p></div>
+        <div class="p-step"><div class="p-num">04</div><h3 data-i18n="proc4_h">Paiement sécurisé</h3><p data-i18n="proc4_p">Virement international ou mobile money, fonds bloqués jusqu'à la validation de l'acte.</p></div>
+        <div class="p-step"><div class="p-num">05</div><h3 data-i18n="proc5_h">Suivi &amp; documents</h3><p data-i18n="proc5_p">Recevez vos actes scannés et suivez l'état de votre terrain par photo et vidéo à tout moment.</p></div>
       </div>
     </div>
   </section>
@@ -426,29 +454,29 @@
   <section>
     <div class="wrap">
       <div class="sec-head">
-        <div class="eyebrow">Pourquoi la diaspora nous fait confiance</div>
-        <h2>Conçu pour l'inquiétude n°1 : acheter un terrain qu'on ne voit pas</h2>
+        <div class="eyebrow" data-i18n="trust_eyebrow">Pourquoi la diaspora nous fait confiance</div>
+        <h2 data-i18n="trust_h2">Conçu pour l'inquiétude n°1 : acheter un terrain qu'on ne voit pas</h2>
       </div>
       <div class="trust-grid">
         <div class="trust-card">
           <div class="ic"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 3l7 3v6c0 4.4-2.9 7.9-7 9-4.1-1.1-7-4.6-7-9V6l7-3z"/><path d="M9.2 12.2l2 2 3.6-4"/></svg></div>
-          <h3>Garantie anti-litige</h3>
-          <p>Remboursement intégral si un vice de titre est découvert après l'achat, sur les 24 premiers mois.</p>
+          <h3 data-i18n="trust1_h">Garantie anti-litige</h3>
+          <p data-i18n="trust1_p">Remboursement intégral si un vice de titre est découvert après l'achat, sur les 24 premiers mois.</p>
         </div>
         <div class="trust-card">
           <div class="ic"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="8" r="3.4"/><path d="M5 20c1.2-4 4-6 7-6s5.8 2 7 6"/></svg></div>
-          <h3>Mandataire local dédié</h3>
-          <p>Un agent HLM INFO PUB assermenté suit chaque dossier sur place, de la visite à la remise des clés.</p>
+          <h3 data-i18n="trust2_h">Mandataire local dédié</h3>
+          <p data-i18n="trust2_p">Un agent HLM INFO PUB assermenté suit chaque dossier sur place, de la visite à la remise des clés.</p>
         </div>
         <div class="trust-card">
           <div class="ic"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="6.5" width="12" height="11" rx="1.4"/><path d="M15 10.5l6-3v9l-6-3"/></svg></div>
-          <h3>Visite vidéo en direct</h3>
-          <p>Demandez une visite filmée en temps réel du terrain, à l'heure qui vous convient depuis l'étranger.</p>
+          <h3 data-i18n="trust3_h">Visite vidéo en direct</h3>
+          <p data-i18n="trust3_p">Demandez une visite filmée en temps réel du terrain, à l'heure qui vous convient depuis l'étranger.</p>
         </div>
         <div class="trust-card">
           <div class="ic"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="8.2"/><path d="M12 7.5v9M9.3 9.6c0-1.2 1.2-2.1 2.7-2.1s2.7.9 2.7 2c0 2.7-5.4 1.3-5.4 4 0 1.1 1.2 2 2.7 2s2.7-.9 2.7-2"/></svg></div>
-          <h3>Paiement multi-devises</h3>
-          <p>Réglez en euros, dollars ou FCFA, par virement SEPA, carte ou mobile money, fonds sécurisés en séquestre.</p>
+          <h3 data-i18n="trust4_h">Paiement multi-devises</h3>
+          <p data-i18n="trust4_p">Réglez en euros, dollars ou FCFA, par virement SEPA, carte ou mobile money, fonds sécurisés en séquestre.</p>
         </div>
       </div>
     </div>
@@ -458,24 +486,24 @@
   <section id="contact" style="background:var(--bg-soft);">
     <div class="wrap">
       <div class="sec-head">
-        <div class="eyebrow">Nous joindre</div>
-        <h2>Contact</h2>
-        <p>Une question sur une parcelle, un dossier en cours ou une demande de visite vidéo ? Contactez-nous directement.</p>
+        <div class="eyebrow" data-i18n="contact_eyebrow">Nous joindre</div>
+        <h2 data-i18n="contact_h2">Contact</h2>
+        <p data-i18n="contact_p">Une question sur une parcelle, un dossier en cours ou une demande de visite vidéo ? Contactez-nous directement.</p>
       </div>
       <div class="trust-grid" style="grid-template-columns:repeat(auto-fit,minmax(220px,1fr));">
         <div class="trust-card">
           <div class="ic"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 21s7-6.6 7-11.5A7 7 0 105 9.5C5 14.4 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.4"/></svg></div>
-          <h3>Siège</h3>
-          <p>Djassin Zounmè, Carré 1/132<br>Parcelle 6L, Rue 33<br>Porto-Novo, République du Bénin</p>
+          <h3 data-i18n="contact_siege_h">Siège</h3>
+          <p data-i18n="contact_siege_p">Djassin Zounmè, Carré 1/132<br>Parcelle 6L, Rue 33<br>Porto-Novo, République du Bénin</p>
         </div>
         <div class="trust-card">
           <div class="ic"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M22 16.9v3a2 2 0 01-2.2 2 19.8 19.8 0 01-8.6-3.1 19.5 19.5 0 01-6-6A19.8 19.8 0 012.1 4.2 2 2 0 014.1 2h3a2 2 0 012 1.7c.1.9.3 1.8.6 2.7a2 2 0 01-.5 2.1L8 9.7a16 16 0 006 6l1.2-1.2a2 2 0 012.1-.5c.9.3 1.8.5 2.7.6a2 2 0 011.7 2z"/></svg></div>
-          <h3>Téléphone</h3>
+          <h3 data-i18n="contact_tel_h">Téléphone</h3>
           <p><a href="tel:+2290195994699" style="color:var(--ink);font-weight:600;">+229 01 95 99 46 99</a></p>
         </div>
         <div class="trust-card">
           <div class="ic"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="5" width="18" height="14" rx="1.5"/><path d="M3 7l9 6 9-6"/></svg></div>
-          <h3>Email</h3>
+          <h3 data-i18n="contact_email_h">Email</h3>
           <p><a href="mailto:hlm.info.pub@proton.me" style="color:var(--ink);font-weight:600;">hlm.info.pub@proton.me</a></p>
         </div>
       </div>
@@ -488,26 +516,26 @@
   <section style="padding-top:44px;">
     <div class="wrap">
       <div class="sec-head">
-        <div class="eyebrow">Catalogue</div>
-        <h2>Parcelles disponibles</h2>
-        <p>Toutes les annonces affichées ont passé la vérification de titre HLM INFO PUB.</p>
+        <div class="eyebrow" data-i18n="cat_eyebrow">Catalogue</div>
+        <h2 data-i18n="cat_h2">Parcelles disponibles</h2>
+        <p data-i18n="cat_p">Toutes les annonces affichées ont passé la vérification de titre HLM INFO PUB.</p>
       </div>
 
       <div class="filter-bar">
         <select id="fVille">
-          <option value="">Toutes les villes</option>
+          <option value="" data-i18n="f_ville_all">Toutes les villes</option>
         </select>
         <select id="fStatut">
-          <option value="">Tous statuts</option>
-          <option value="dispo">Disponible</option>
-          <option value="reserve">Réservé</option>
-          <option value="vendu">Vendu</option>
+          <option value="" data-i18n="f_statut_all">Tous statuts</option>
+          <option value="dispo" data-i18n="st_dispo">Disponible</option>
+          <option value="reserve" data-i18n="st_reserve">Réservé</option>
+          <option value="vendu" data-i18n="st_vendu">Vendu</option>
         </select>
         <select id="fPrix">
-          <option value="">Tous budgets</option>
-          <option value="0-5000000">Moins de 5M FCFA</option>
-          <option value="5000000-15000000">5M – 15M FCFA</option>
-          <option value="15000000-999999999">Plus de 15M FCFA</option>
+          <option value="" data-i18n="f_prix_all">Tous budgets</option>
+          <option value="0-5000000" data-i18n="f_prix_1">Moins de 5M FCFA</option>
+          <option value="5000000-15000000" data-i18n="f_prix_2">5M – 15M FCFA</option>
+          <option value="15000000-999999999" data-i18n="f_prix_3">Plus de 15M FCFA</option>
         </select>
         <span class="count" id="resultCount"></span>
       </div>
@@ -517,64 +545,168 @@
   </section>
 </div>
 
+<!-- ================= LOCATION MEUBLÉE ================= -->
+<div class="view" id="view-location">
+  <section style="padding-top:44px;">
+    <div class="wrap">
+      <div class="sec-head">
+        <div class="eyebrow" data-i18n="loc_eyebrow">Location meublée</div>
+        <h2 data-i18n="loc_h2">Appartements et maisons entièrement meublés</h2>
+        <p data-i18n="loc_p">Emménagez directement, sans rien acheter : logements prêts à vivre, gérés à distance pour la diaspora.</p>
+      </div>
+
+      <div class="filter-bar">
+        <select id="lfVille">
+          <option value="" data-i18n="f_ville_all">Toutes les villes</option>
+        </select>
+        <select id="lfType">
+          <option value="" data-i18n="f_type_all">Tous types</option>
+          <option value="appartement" data-i18n="type_appartement">Appartement</option>
+          <option value="maison" data-i18n="type_maison">Maison</option>
+          <option value="immeuble" data-i18n="type_immeuble">Immeuble entier</option>
+        </select>
+        <select id="lfStatut">
+          <option value="" data-i18n="f_statut_all">Tous statuts</option>
+          <option value="dispo" data-i18n="st_dispo">Disponible</option>
+          <option value="reserve" data-i18n="st_reserve">Réservé</option>
+          <option value="loue" data-i18n="st_loue">Loué</option>
+        </select>
+        <select id="lfLoyer">
+          <option value="" data-i18n="f_loyer_all">Tous loyers</option>
+          <option value="0-100000" data-i18n="f_loyer_1">Moins de 100k FCFA/mois</option>
+          <option value="100000-300000" data-i18n="f_loyer_2">100k – 300k FCFA/mois</option>
+          <option value="300000-999999999" data-i18n="f_loyer_3">Plus de 300k FCFA/mois</option>
+        </select>
+        <span class="count" id="resultCountLoc"></span>
+      </div>
+
+      <div class="grid-cards" id="locationGrid"></div>
+    </div>
+  </section>
+</div>
+
 <!-- ================= GESTION ================= -->
 <div class="view" id="view-gestion">
   <section style="padding-top:44px;">
     <div class="wrap">
       <div class="sec-head">
-        <div class="eyebrow">Espace interne</div>
-        <h2>Gestion du portefeuille de parcelles</h2>
-        <p>Ajoutez une parcelle, mettez à jour son statut ou suivez la valeur globale du portefeuille.</p>
+        <div class="eyebrow" data-i18n="ges_eyebrow">Espace interne</div>
+        <h2 data-i18n="ges_h2">Gestion du portefeuille de parcelles</h2>
+        <p data-i18n="ges_p">Ajoutez une parcelle, mettez à jour son statut ou suivez la valeur globale du portefeuille.</p>
       </div>
 
       <div id="loginBox" style="max-width:360px;margin:20px 0;padding:24px;border:1px solid rgba(255,255,255,0.15);border-radius:12px;">
-        <h3 style="margin-top:0;">Connexion requise</h3>
-        <label>Email</label>
+        <h3 style="margin-top:0;" data-i18n="login_h3">Connexion requise</h3>
+        <label data-i18n="login_email">Email</label>
         <input type="email" id="loginEmail" placeholder="ton@email.com" style="display:block;width:100%;margin:6px 0 14px;padding:8px;">
-        <label>Mot de passe</label>
+        <label data-i18n="login_pass">Mot de passe</label>
         <input type="password" id="loginPassword" placeholder="••••••••" style="display:block;width:100%;margin:6px 0 14px;padding:8px;">
-        <button class="cta-btn" id="loginBtn">Se connecter</button>
+        <button class="cta-btn" id="loginBtn" data-i18n="login_btn">Se connecter</button>
         <p id="loginError" style="color:#D45; font-size:13px; margin-top:10px;"></p>
       </div>
 
       <div id="gestionContent" style="display:none;">
       <div style="text-align:right; margin-bottom:10px;">
-        <button class="cta-ghost" id="logoutBtn">Se déconnecter</button>
+        <button class="cta-ghost" id="logoutBtn" data-i18n="logout_btn">Se déconnecter</button>
       </div>
+
+      <div class="gestion-subtabs">
+        <button class="gestion-subtab-btn active" data-sub="parcelles" data-i18n="ges_tab_parcelles">Parcelles</button>
+        <button class="gestion-subtab-btn" data-sub="locations" data-i18n="ges_tab_locations">Location meublée</button>
+      </div>
+
+      <div class="gestion-sub active" id="gestionSubParcelles">
       <div class="stats-row">
-        <div class="stat-box"><div class="n" id="statTotal">0</div><div class="l">Parcelles au catalogue</div></div>
-        <div class="stat-box"><div class="n" id="statDispo">0</div><div class="l">Disponibles</div></div>
-        <div class="stat-box"><div class="n" id="statVendu">0</div><div class="l">Vendues</div></div>
-        <div class="stat-box"><div class="n" id="statValeur">0</div><div class="l">Valeur totale (M FCFA)</div></div>
+        <div class="stat-box"><div class="n" id="statTotal">0</div><div class="l" data-i18n="stat_total">Parcelles au catalogue</div></div>
+        <div class="stat-box"><div class="n" id="statDispo">0</div><div class="l" data-i18n="stat_dispo">Disponibles</div></div>
+        <div class="stat-box"><div class="n" id="statVendu">0</div><div class="l" data-i18n="stat_vendu">Vendues</div></div>
+        <div class="stat-box"><div class="n" id="statValeur">0</div><div class="l" data-i18n="stat_valeur">Valeur totale (M FCFA)</div></div>
       </div>
 
       <div class="gestion-layout">
         <table class="g-table">
           <thead>
-            <tr><th>Photo</th><th>Référence</th><th>Ville</th><th>Surface</th><th>Prix FCFA</th><th>Statut</th><th></th></tr>
+            <tr><th data-i18n="th_photo">Photo</th><th data-i18n="th_ref">Référence</th><th data-i18n="th_ville">Ville</th><th data-i18n="th_surface">Surface</th><th data-i18n="th_prix">Prix FCFA</th><th data-i18n="th_statut">Statut</th><th></th></tr>
           </thead>
           <tbody id="gestionTbody"></tbody>
         </table>
 
         <div class="add-form">
-          <h3>Ajouter une parcelle</h3>
-          <label>Ville / quartier</label>
+          <h3 data-i18n="add_h3">Ajouter une parcelle</h3>
+          <label data-i18n="add_ville">Ville / quartier</label>
           <input type="text" id="newVille" placeholder="ex. Ouidah, Pahou">
-          <label>Surface (m²)</label>
+          <label data-i18n="add_surface">Surface (m²)</label>
           <input type="number" id="newSurface" placeholder="ex. 500">
-          <label>Prix (FCFA)</label>
+          <label data-i18n="add_prix">Prix (FCFA)</label>
           <input type="number" id="newPrix" placeholder="ex. 8000000">
-          <label>Statut</label>
+          <label data-i18n="add_statut">Statut</label>
           <select id="newStatut">
-            <option value="dispo">Disponible</option>
-            <option value="reserve">Réservé</option>
-            <option value="vendu">Vendu</option>
+            <option value="dispo" data-i18n="st_dispo">Disponible</option>
+            <option value="reserve" data-i18n="st_reserve">Réservé</option>
+            <option value="vendu" data-i18n="st_vendu">Vendu</option>
           </select>
-          <label>Photo</label>
+          <label data-i18n="add_photo">Photo</label>
           <input type="file" id="newPhoto" accept="image/*">
-          <button class="cta-btn" id="addParcelleBtn"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M12 5v14M5 12h14"/></svg> Ajouter au catalogue</button>
+          <button class="cta-btn" id="addParcelleBtn"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M12 5v14M5 12h14"/></svg> <span data-i18n="add_btn">Ajouter au catalogue</span></button>
         </div>
       </div>
+      </div>
+
+      <div class="gestion-sub" id="gestionSubLocations">
+      <div class="stats-row">
+        <div class="stat-box"><div class="n" id="statLocTotal">0</div><div class="l" data-i18n="statloc_total">Logements listés</div></div>
+        <div class="stat-box"><div class="n" id="statLocDispo">0</div><div class="l" data-i18n="statloc_dispo">Disponibles</div></div>
+        <div class="stat-box"><div class="n" id="statLocLoue">0</div><div class="l" data-i18n="statloc_loue">Loués</div></div>
+        <div class="stat-box"><div class="n" id="statLocValeur">0</div><div class="l" data-i18n="statloc_valeur">Loyers cumulés (M FCFA/mois)</div></div>
+      </div>
+
+      <div class="gestion-layout">
+        <table class="g-table">
+          <thead>
+            <tr><th data-i18n="th_photo">Photo</th><th data-i18n="th_ref">Référence</th><th data-i18n="th_ville">Ville</th><th data-i18n="th_type">Type</th><th data-i18n="th_chambres">Chambres</th><th data-i18n="th_loyer">Loyer/mois</th><th data-i18n="th_statut">Statut</th><th></th></tr>
+          </thead>
+          <tbody id="gestionLocTbody"></tbody>
+        </table>
+
+        <div class="add-form">
+          <h3 data-i18n="addloc_h3">Ajouter un logement meublé</h3>
+          <label data-i18n="add_ville">Ville / quartier</label>
+          <input type="text" id="newLocVille" placeholder="ex. Cotonou, Fidjrossè">
+          <label data-i18n="addloc_type">Type de bien</label>
+          <select id="newLocType">
+            <option value="appartement" data-i18n="type_appartement">Appartement</option>
+            <option value="maison" data-i18n="type_maison">Maison</option>
+            <option value="immeuble" data-i18n="type_immeuble">Immeuble entier</option>
+          </select>
+          <label data-i18n="addloc_chambres">Nombre de chambres</label>
+          <input type="number" id="newLocChambres" placeholder="ex. 3">
+          <label data-i18n="add_surface">Surface (m²)</label>
+          <input type="number" id="newLocSurface" placeholder="ex. 120">
+          <label data-i18n="addloc_loyer">Loyer mensuel (FCFA)</label>
+          <input type="number" id="newLocLoyer" placeholder="ex. 250000">
+          <label data-i18n="add_statut">Statut</label>
+          <select id="newLocStatut">
+            <option value="dispo" data-i18n="st_dispo">Disponible</option>
+            <option value="reserve" data-i18n="st_reserve">Réservé</option>
+            <option value="loue" data-i18n="st_loue">Loué</option>
+          </select>
+          <label data-i18n="addloc_equip">Équipements inclus</label>
+          <div class="checkbox-grid">
+            <label class="checkbox-item"><input type="checkbox" id="eqWifi"> <span data-i18n="equip_wifi">Wifi</span></label>
+            <label class="checkbox-item"><input type="checkbox" id="eqClim"> <span data-i18n="equip_clim">Climatisation</span></label>
+            <label class="checkbox-item"><input type="checkbox" id="eqCuisine"> <span data-i18n="equip_cuisine">Cuisine équipée</span></label>
+            <label class="checkbox-item"><input type="checkbox" id="eqGenerateur"> <span data-i18n="equip_generateur">Groupe électrogène</span></label>
+            <label class="checkbox-item"><input type="checkbox" id="eqEau"> <span data-i18n="equip_eau">Eau courante</span></label>
+            <label class="checkbox-item"><input type="checkbox" id="eqParking"> <span data-i18n="equip_parking">Parking</span></label>
+            <label class="checkbox-item"><input type="checkbox" id="eqSecurite"> <span data-i18n="equip_securite">Sécurité 24/7</span></label>
+          </div>
+          <label data-i18n="add_photo">Photo</label>
+          <input type="file" id="newLocPhoto" accept="image/*">
+          <button class="cta-btn" id="addLocationBtn"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M12 5v14M5 12h14"/></svg> <span data-i18n="addloc_btn">Ajouter le logement</span></button>
+        </div>
+      </div>
+      </div>
+
       </div>
     </div>
   </section>
@@ -585,36 +717,36 @@
   <div class="modal" id="modalContent"></div>
 </div>
 
-<a class="whatsapp-fab" href="https://wa.me/2290195994699" target="_blank" title="Discuter sur WhatsApp"><svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.5 2 2 6.5 2 12c0 1.9.5 3.6 1.4 5.2L2 22l4.9-1.3C8.5 21.5 10.2 22 12 22c5.5 0 10-4.5 10-10S17.5 2 12 2zm5.6 14.2c-.2.7-1.4 1.3-2 1.4-.5.1-1.1.1-1.8-.1-.4-.1-1-.3-1.7-.6-3-1.3-4.9-4.3-5.1-4.5-.1-.2-1.2-1.6-1.2-3s.7-2.1 1-2.4c.3-.3.6-.4.8-.4h.6c.2 0 .4 0 .6.5.2.5.8 1.9.8 2 .1.2.1.4 0 .6-.1.2-.2.3-.3.5-.2.2-.3.3-.5.5-.2.2-.3.4-.1.7.2.3.9 1.4 1.9 2.3 1.3 1.2 2.4 1.5 2.7 1.7.3.2.5.1.7-.1.2-.2.8-.9 1-1.2.2-.3.4-.3.7-.2.3.1 1.7.8 2 .9.3.2.5.2.6.4.1.2.1 1-.1 1.7z"/></svg></a>
+<a class="whatsapp-fab" href="https://wa.me/2290195994699" target="_blank" title="Discuter sur WhatsApp" id="whatsappFab"><svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.5 2 2 6.5 2 12c0 1.9.5 3.6 1.4 5.2L2 22l4.9-1.3C8.5 21.5 10.2 22 12 22c5.5 0 10-4.5 10-10S17.5 2 12 2zm5.6 14.2c-.2.7-1.4 1.3-2 1.4-.5.1-1.1.1-1.8-.1-.4-.1-1-.3-1.7-.6-3-1.3-4.9-4.3-5.1-4.5-.1-.2-1.2-1.6-1.2-3s.7-2.1 1-2.4c.3-.3.6-.4.8-.4h.6c.2 0 .4 0 .6.5.2.5.8 1.9.8 2 .1.2.1.4 0 .6-.1.2-.2.3-.3.5-.2.2-.3.3-.5.5-.2.2-.3.4-.1.7.2.3.9 1.4 1.9 2.3 1.3 1.2 2.4 1.5 2.7 1.7.3.2.5.1.7-.1.2-.2.8-.9 1-1.2.2-.3.4-.3.7-.2.3.1 1.7.8 2 .9.3.2.5.2.6.4.1.2.1 1-.1 1.7z"/></svg></a>
 
 <footer>
   <div class="wrap">
     <div class="foot-grid">
       <div>
         <h4>HLM INFO PUB</h4>
-        <p>Plateforme d'achat, de vente et de gestion de parcelles au Bénin, pensée pour les Béninois de l'extérieur qui investissent au pays sans pouvoir se déplacer à chaque étape.</p>
+        <p data-i18n="foot_desc">Plateforme d'achat, de vente et de gestion de parcelles au Bénin, pensée pour les Béninois de l'extérieur qui investissent au pays sans pouvoir se déplacer à chaque étape.</p>
       </div>
       <div>
-        <h4>Plateforme</h4>
+        <h4 data-i18n="foot_h_plat">Plateforme</h4>
         <ul>
-          <li>Catalogue</li>
-          <li>Comment ça marche</li>
-          <li>Devenir mandataire local</li>
-          <li>Espace gestion</li>
+          <li data-i18n="foot_li1">Catalogue</li>
+          <li data-i18n="foot_li2">Comment ça marche</li>
+          <li data-i18n="foot_li3">Devenir mandataire local</li>
+          <li data-i18n="foot_li4">Espace gestion</li>
         </ul>
       </div>
       <div>
-        <h4>Contact</h4>
+        <h4 data-i18n="foot_h_contact">Contact</h4>
         <ul>
           <li>Djassin Zounmè, Carré 1/132, Rue 33, Porto-Novo</li>
-          <li>Tél : +229 01 95 99 46 99</li>
+          <li><span data-i18n="foot_tel">Tél</span> : +229 01 95 99 46 99</li>
           <li>hlm.info.pub@proton.me</li>
         </ul>
       </div>
     </div>
     <div class="foot-bottom">
-      <span>© 2026 HLM INFO PUB — Démonstration logicielle.</span>
-      <span>Fait pour la diaspora béninoise</span>
+      <span data-i18n="foot_copy">© 2026 HLM INFO PUB — Démonstration logicielle.</span>
+      <span data-i18n="foot_made">Fait pour la diaspora béninoise</span>
     </div>
   </div>
 </footer>
@@ -634,18 +766,196 @@ if (configOk) {
   });
 }
 
+/* ---------------- LANGUE (FR / EN) ---------------- */
+const i18n = {
+  fr: {
+    nav_accueil:"Accueil", nav_catalogue:"Catalogue", nav_gestion:"Gestion", nav_cta_voir:"Voir les parcelles",
+    logo_tag:"FONCIER VÉRIFIÉ · BÉNIN",
+    hero_eyebrow:"Depuis Paris, Montréal, Boston ou Libreville",
+    hero_h1:"Achetez une parcelle au Bénin <em>sans jamais vous faire avoir</em> à distance.",
+    hero_lead:"HLM INFO PUB vérifie chaque titre foncier, mandate un agent local pour vous représenter, et vous accompagne du premier appel vidéo jusqu'à la remise de vos documents authentifiés — où que vous soyez.",
+    hero_cta1:"Explorer le catalogue", hero_cta2:"Espace gestion",
+    stat1:"parcelles vérifiées", stat2:"litige de titre en 4 ans", stat3:"pays de résidence clients",
+    cc_title:"Parcelle Réf. AT-0143", cc_loc:"Abomey-Calavi, Zinvié — 600 m²", cc_badge:"✓ Titre vérifié",
+    cc_s1_b:"Titre foncier authentifié", cc_s1_s:"Conservation foncière — validé",
+    cc_s2_b:"Bornage contradictoire", cc_s2_s:"Géomètre agréé — validé",
+    cc_s3_b:"Mandataire local désigné", cc_s3_s:"Agent HLM INFO PUB — actif",
+    cc_s4_b:"Acte notarié", cc_s4_s:"En attente de signature",
+    cc_updated:"Mis à jour il y a 2 jours",
+    proc_eyebrow:"Le parcours", proc_h2:"Cinq étapes, zéro déplacement obligatoire",
+    proc_p:"Un processus séquentiel pensé pour quelqu'un qui ne peut pas se rendre sur place à chaque décision.",
+    proc1_h:"Sélection à distance", proc1_p:"Parcourez le catalogue, filtrez par ville, budget et statut, et échangez en visio avec un conseiller.",
+    proc2_h:"Vérification du titre", proc2_p:"Nos juristes contrôlent l'origine de propriété auprès de la conservation foncière avant toute réservation.",
+    proc3_h:"Mandataire &amp; procuration", proc3_p:"Un agent local vous représente sur place via une procuration notariée que vous signez à distance.",
+    proc4_h:"Paiement sécurisé", proc4_p:"Virement international ou mobile money, fonds bloqués jusqu'à la validation de l'acte.",
+    proc5_h:"Suivi &amp; documents", proc5_p:"Recevez vos actes scannés et suivez l'état de votre terrain par photo et vidéo à tout moment.",
+    trust_eyebrow:"Pourquoi la diaspora nous fait confiance",
+    trust_h2:"Conçu pour l'inquiétude n°1 : acheter un terrain qu'on ne voit pas",
+    trust1_h:"Garantie anti-litige", trust1_p:"Remboursement intégral si un vice de titre est découvert après l'achat, sur les 24 premiers mois.",
+    trust2_h:"Mandataire local dédié", trust2_p:"Un agent HLM INFO PUB assermenté suit chaque dossier sur place, de la visite à la remise des clés.",
+    trust3_h:"Visite vidéo en direct", trust3_p:"Demandez une visite filmée en temps réel du terrain, à l'heure qui vous convient depuis l'étranger.",
+    trust4_h:"Paiement multi-devises", trust4_p:"Réglez en euros, dollars ou FCFA, par virement SEPA, carte ou mobile money, fonds sécurisés en séquestre.",
+    contact_eyebrow:"Nous joindre", contact_h2:"Contact",
+    contact_p:"Une question sur une parcelle, un dossier en cours ou une demande de visite vidéo ? Contactez-nous directement.",
+    contact_siege_h:"Siège", contact_siege_p:"Djassin Zounmè, Carré 1/132<br>Parcelle 6L, Rue 33<br>Porto-Novo, République du Bénin",
+    contact_tel_h:"Téléphone", contact_email_h:"Email",
+    cat_eyebrow:"Catalogue", cat_h2:"Parcelles disponibles",
+    cat_p:"Toutes les annonces affichées ont passé la vérification de titre HLM INFO PUB.",
+    f_ville_all:"Toutes les villes", f_statut_all:"Tous statuts", f_prix_all:"Tous budgets",
+    f_prix_1:"Moins de 5M FCFA", f_prix_2:"5M – 15M FCFA", f_prix_3:"Plus de 15M FCFA",
+    st_dispo:"Disponible", st_reserve:"Réservé", st_vendu:"Vendu",
+    ges_eyebrow:"Espace interne", ges_h2:"Gestion du portefeuille de parcelles",
+    ges_p:"Ajoutez une parcelle, mettez à jour son statut ou suivez la valeur globale du portefeuille.",
+    login_h3:"Connexion requise", login_email:"Email", login_pass:"Mot de passe", login_btn:"Se connecter",
+    logout_btn:"Se déconnecter",
+    stat_total:"Parcelles au catalogue", stat_dispo:"Disponibles", stat_vendu:"Vendues", stat_valeur:"Valeur totale (M FCFA)",
+    th_photo:"Photo", th_ref:"Référence", th_ville:"Ville", th_surface:"Surface", th_prix:"Prix FCFA", th_statut:"Statut",
+    add_h3:"Ajouter une parcelle", add_ville:"Ville / quartier", add_surface:"Surface (m²)", add_prix:"Prix (FCFA)",
+    add_statut:"Statut", add_photo:"Photo", add_btn:"Ajouter au catalogue",
+    foot_desc:"Plateforme d'achat, de vente et de gestion de parcelles au Bénin, pensée pour les Béninois de l'extérieur qui investissent au pays sans pouvoir se déplacer à chaque étape.",
+    foot_h_plat:"Plateforme", foot_li1:"Catalogue", foot_li2:"Comment ça marche", foot_li3:"Devenir mandataire local", foot_li4:"Espace gestion",
+    foot_h_contact:"Contact", foot_tel:"Tél",
+    foot_copy:"© 2026 HLM INFO PUB — Démonstration logicielle.", foot_made:"Fait pour la diaspora béninoise",
+    result_count:(n)=> `${n} parcelle${n>1?'s':''}`,
+    step_labels:[["Titre foncier authentifié","Conservation foncière"],["Bornage contradictoire","Géomètre agréé"],["Mandataire local désigné","Agent HLM INFO PUB"],["Acte notarié","Signature finale"]],
+    step_validated:"validé", step_pending:"en attente",
+    modal_steps_done:(n)=> `${n}/4 étapes validées`,
+    card_verifs:(n)=> `${n}/4 vérifications`,
+    contacter_conseiller:"Contacter un conseiller", visite_video:"Demander une visite vidéo",
+    modal_note:"Une procuration notariée vous permet de mandater notre agent local pour signer en votre nom, sans déplacement.",
+    whatsapp_title:"Discuter sur WhatsApp",
+    aucune_parcelle:"Aucune parcelle ne correspond à ces critères.",
+    nav_location:"Location",
+    loc_eyebrow:"Location meublée", loc_h2:"Appartements et maisons entièrement meublés",
+    loc_p:"Emménagez directement, sans rien acheter : logements prêts à vivre, gérés à distance pour la diaspora.",
+    f_type_all:"Tous types", type_appartement:"Appartement", type_maison:"Maison", type_immeuble:"Immeuble entier",
+    f_loyer_all:"Tous loyers", f_loyer_1:"Moins de 100k FCFA/mois", f_loyer_2:"100k – 300k FCFA/mois", f_loyer_3:"Plus de 300k FCFA/mois",
+    st_loue:"Loué", par_mois:"mois",
+    aucune_location:"Aucun logement ne correspond à ces critères.",
+    equip_wifi:"Wifi", equip_clim:"Climatisation", equip_cuisine:"Cuisine équipée",
+    equip_generateur:"Groupe électrogène", equip_eau:"Eau courante", equip_parking:"Parking", equip_securite:"Sécurité 24/7",
+    equip_none:"Équipements non précisés",
+    loc_contacter:"Contacter un conseiller", loc_visite:"Demander une visite vidéo",
+    loc_modal_note:"Bail flexible, état des lieux filmé et loyer réglable en devises depuis l'étranger.",
+    ges_tab_parcelles:"Parcelles", ges_tab_locations:"Location meublée",
+    statloc_total:"Logements listés", statloc_dispo:"Disponibles", statloc_loue:"Loués", statloc_valeur:"Loyers cumulés (M FCFA/mois)",
+    th_type:"Type", th_chambres:"Chambres", th_loyer:"Loyer/mois",
+    addloc_h3:"Ajouter un logement meublé", addloc_type:"Type de bien", addloc_chambres:"Nombre de chambres",
+    addloc_loyer:"Loyer mensuel (FCFA)", addloc_equip:"Équipements inclus", addloc_btn:"Ajouter le logement"
+  },
+  en: {
+    nav_accueil:"Home", nav_catalogue:"Listings", nav_gestion:"Management", nav_cta_voir:"View listings",
+    logo_tag:"VERIFIED LAND · BENIN",
+    hero_eyebrow:"From Paris, Montreal, Boston or Libreville",
+    hero_h1:"Buy land in Benin <em>without ever getting scammed</em>, from wherever you are.",
+    hero_lead:"HLM INFO PUB verifies every land title, appoints a local agent to represent you, and supports you from the first video call to the delivery of your authenticated documents — wherever you are.",
+    hero_cta1:"Explore the listings", hero_cta2:"Management area",
+    stat1:"verified plots", stat2:"title disputes in 4 years", stat3:"client countries of residence",
+    cc_title:"Plot Ref. AT-0143", cc_loc:"Abomey-Calavi, Zinvié — 600 m²", cc_badge:"✓ Title verified",
+    cc_s1_b:"Land title authenticated", cc_s1_s:"Land registry — validated",
+    cc_s2_b:"Boundary survey", cc_s2_s:"Licensed surveyor — validated",
+    cc_s3_b:"Local agent appointed", cc_s3_s:"HLM INFO PUB agent — active",
+    cc_s4_b:"Notarized deed", cc_s4_s:"Awaiting signature",
+    cc_updated:"Updated 2 days ago",
+    proc_eyebrow:"The journey", proc_h2:"Five steps, zero mandatory travel",
+    proc_p:"A sequential process designed for someone who can't be on site for every decision.",
+    proc1_h:"Remote selection", proc1_p:"Browse the listings, filter by city, budget and status, and speak with an advisor by video call.",
+    proc2_h:"Title verification", proc2_p:"Our legal team checks the property's ownership history with the land registry before any reservation.",
+    proc3_h:"Agent &amp; power of attorney", proc3_p:"A local agent represents you on site via a notarized power of attorney you sign remotely.",
+    proc4_h:"Secure payment", proc4_p:"International transfer or mobile money, funds held in escrow until the deed is validated.",
+    proc5_h:"Tracking &amp; documents", proc5_p:"Receive your scanned deeds and track your land's status with photos and video at any time.",
+    trust_eyebrow:"Why the diaspora trusts us",
+    trust_h2:"Built for concern #1: buying land you can't see",
+    trust1_h:"Anti-dispute guarantee", trust1_p:"Full refund if a title defect is discovered after purchase, within the first 24 months.",
+    trust2_h:"Dedicated local agent", trust2_p:"A sworn HLM INFO PUB agent follows every file on the ground, from the visit to the handover of keys.",
+    trust3_h:"Live video visit", trust3_p:"Request a real-time filmed visit of the land, at a time that suits you from abroad.",
+    trust4_h:"Multi-currency payment", trust4_p:"Pay in euros, dollars or FCFA, by SEPA transfer, card or mobile money, funds held securely in escrow.",
+    contact_eyebrow:"Get in touch", contact_h2:"Contact",
+    contact_p:"A question about a plot, an ongoing file, or a request for a video visit? Contact us directly.",
+    contact_siege_h:"Headquarters", contact_siege_p:"Djassin Zounmè, Block 1/132<br>Plot 6L, Street 33<br>Porto-Novo, Republic of Benin",
+    contact_tel_h:"Phone", contact_email_h:"Email",
+    cat_eyebrow:"Listings", cat_h2:"Available plots",
+    cat_p:"Every listing shown has passed HLM INFO PUB's title verification.",
+    f_ville_all:"All cities", f_statut_all:"All statuses", f_prix_all:"All budgets",
+    f_prix_1:"Under 5M FCFA", f_prix_2:"5M – 15M FCFA", f_prix_3:"Over 15M FCFA",
+    st_dispo:"Available", st_reserve:"Reserved", st_vendu:"Sold",
+    ges_eyebrow:"Internal area", ges_h2:"Plot portfolio management",
+    ges_p:"Add a plot, update its status, or track the overall value of the portfolio.",
+    login_h3:"Login required", login_email:"Email", login_pass:"Password", login_btn:"Log in",
+    logout_btn:"Log out",
+    stat_total:"Plots listed", stat_dispo:"Available", stat_vendu:"Sold", stat_valeur:"Total value (M FCFA)",
+    th_photo:"Photo", th_ref:"Reference", th_ville:"City", th_surface:"Surface", th_prix:"Price FCFA", th_statut:"Status",
+    add_h3:"Add a plot", add_ville:"City / neighborhood", add_surface:"Surface (m²)", add_prix:"Price (FCFA)",
+    add_statut:"Status", add_photo:"Photo", add_btn:"Add to listings",
+    foot_desc:"A platform for buying, selling and managing land in Benin, built for Beninese abroad who invest back home without being able to travel for every step.",
+    foot_h_plat:"Platform", foot_li1:"Listings", foot_li2:"How it works", foot_li3:"Become a local agent", foot_li4:"Management area",
+    foot_h_contact:"Contact", foot_tel:"Phone",
+    foot_copy:"© 2026 HLM INFO PUB — Software demo.", foot_made:"Made for the Beninese diaspora",
+    result_count:(n)=> `${n} plot${n>1?'s':''}`,
+    step_labels:[["Land title authenticated","Land registry"],["Boundary survey","Licensed surveyor"],["Local agent appointed","HLM INFO PUB agent"],["Notarized deed","Final signature"]],
+    step_validated:"validated", step_pending:"pending",
+    modal_steps_done:(n)=> `${n}/4 steps validated`,
+    card_verifs:(n)=> `${n}/4 checks`,
+    contacter_conseiller:"Contact an advisor", visite_video:"Request a video visit",
+    modal_note:"A notarized power of attorney lets you appoint our local agent to sign on your behalf, with no travel required.",
+    whatsapp_title:"Chat on WhatsApp",
+    aucune_parcelle:"No plot matches these criteria.",
+    nav_location:"Rentals",
+    loc_eyebrow:"Furnished rentals", loc_h2:"Fully furnished apartments and houses",
+    loc_p:"Move in directly, nothing to buy: move-in ready homes, managed remotely for the diaspora.",
+    f_type_all:"All types", type_appartement:"Apartment", type_maison:"House", type_immeuble:"Whole building",
+    f_loyer_all:"All rents", f_loyer_1:"Under 100k FCFA/month", f_loyer_2:"100k – 300k FCFA/month", f_loyer_3:"Over 300k FCFA/month",
+    st_loue:"Rented", par_mois:"month",
+    aucune_location:"No home matches these criteria.",
+    equip_wifi:"Wifi", equip_clim:"Air conditioning", equip_cuisine:"Equipped kitchen",
+    equip_generateur:"Generator", equip_eau:"Running water", equip_parking:"Parking", equip_securite:"24/7 security",
+    equip_none:"Amenities not specified",
+    loc_contacter:"Contact an advisor", loc_visite:"Request a video visit",
+    loc_modal_note:"Flexible lease, filmed move-in inspection, and rent payable in foreign currency from abroad.",
+    ges_tab_parcelles:"Plots", ges_tab_locations:"Furnished rentals",
+    statloc_total:"Homes listed", statloc_dispo:"Available", statloc_loue:"Rented", statloc_valeur:"Combined rent (M FCFA/month)",
+    th_type:"Type", th_chambres:"Bedrooms", th_loyer:"Rent/month",
+    addloc_h3:"Add a furnished home", addloc_type:"Property type", addloc_chambres:"Number of bedrooms",
+    addloc_loyer:"Monthly rent (FCFA)", addloc_equip:"Included amenities", addloc_btn:"Add the home"
+  }
+};
+let lang = localStorage.getItem('hlm_lang') || 'fr';
+
+function applyLang(){
+  const t = i18n[lang];
+  document.querySelectorAll('[data-i18n]').forEach(el=>{
+    const key = el.dataset.i18n;
+    if(t[key] !== undefined) el.textContent = t[key];
+  });
+  document.querySelectorAll('[data-i18n-html]').forEach(el=>{
+    const key = el.dataset.i18nHtml;
+    if(t[key] !== undefined) el.innerHTML = t[key];
+  });
+  document.documentElement.lang = lang;
+  document.getElementById('langFR').classList.toggle('cur', lang==='fr');
+  document.getElementById('langEN').classList.toggle('cur', lang==='en');
+  const fab = document.getElementById('whatsappFab');
+  if(fab) fab.title = t.whatsapp_title;
+  populateVilleFilter();
+  renderCatalogue();
+  renderGestion();
+  populateVilleFilterLoc();
+  renderCatalogueLocation();
+  renderGestionLocations();
+}
+document.getElementById('langBtn').addEventListener('click', ()=>{
+  lang = lang==='fr' ? 'en' : 'fr';
+  localStorage.setItem('hlm_lang', lang);
+  applyLang();
+});
+
 /* couleurs de vignette assignées par ville (déterministe, pas de dépendance externe) */
 const grads = ["linear-gradient(135deg,#2C6350,#1F4A3D)","linear-gradient(135deg,#B14A2C,#8C3A21)","linear-gradient(135deg,#B9903F,#8C6E2A)","linear-gradient(135deg,#1F4A3D,#123329)","linear-gradient(135deg,#5B564A,#1C1A15)"];
 function gradFor(id){ let h=0; for(const c of id) h+=c.charCodeAt(0); return grads[h%grads.length]; }
 
 let parcelles = []; // rempli depuis Supabase
+let locations = []; // logements meublés, rempli depuis Supabase
 
-const stepLabels = [
-  ["Titre foncier authentifié","Conservation foncière"],
-  ["Bornage contradictoire","Géomètre agréé"],
-  ["Mandataire local désigné","Agent HLM INFO PUB"],
-  ["Acte notarié","Signature finale"]
-];
 function stepsOf(p){ return [p.etape_titre, p.etape_bornage, p.etape_mandataire, p.etape_notarie]; }
 
 /* ---------------- DEVISES ---------------- */
@@ -669,6 +979,7 @@ function switchView(name){
   document.getElementById('view-'+name).classList.add('active');
   document.querySelectorAll('.tab-btn').forEach(b=>b.classList.toggle('active', b.dataset.view===name));
   if(name==='catalogue') renderCatalogue();
+  if(name==='location') renderCatalogueLocation();
   if(name==='gestion'){ checkAuthAndRenderGestion(); }
   window.scrollTo({top:0,behavior:'smooth'});
 }
@@ -681,11 +992,19 @@ async function checkAuthAndRenderGestion(){
     document.getElementById('loginBox').style.display = 'none';
     document.getElementById('gestionContent').style.display = 'block';
     renderGestion();
+    renderGestionLocations();
   } else {
     document.getElementById('loginBox').style.display = 'block';
     document.getElementById('gestionContent').style.display = 'none';
   }
 }
+document.querySelectorAll('.gestion-subtab-btn').forEach(btn=>{
+  btn.addEventListener('click', ()=>{
+    document.querySelectorAll('.gestion-subtab-btn').forEach(b=>b.classList.toggle('active', b===btn));
+    document.getElementById('gestionSubParcelles').classList.toggle('active', btn.dataset.sub==='parcelles');
+    document.getElementById('gestionSubLocations').classList.toggle('active', btn.dataset.sub==='locations');
+  });
+});
 document.getElementById('loginBtn').addEventListener('click', async ()=>{
   const email = document.getElementById('loginEmail').value.trim();
   const password = document.getElementById('loginPassword').value;
@@ -716,16 +1035,46 @@ async function loadParcelles(){
   renderGestion();
 }
 
+async function loadLocations(){
+  if(!supabaseClient) return;
+  const {data, error} = await supabaseClient.from('locations_meublees').select('*').order('created_at',{ascending:false});
+  if(error){ console.error(error); alert("Erreur de chargement des logements : "+error.message); return; }
+  locations = data || [];
+  populateVilleFilterLoc();
+  renderCatalogueLocation();
+  renderGestionLocations();
+}
+
 /* ---------------- CATALOGUE ---------------- */
 function populateVilleFilter(){
   const sel = document.getElementById('fVille');
   const current = sel.value;
   const villes = [...new Set(parcelles.map(p=>p.ville.split(',')[0]))];
-  sel.innerHTML = '<option value="">Toutes les villes</option>' + villes.map(v=>`<option value="${v}">${v}</option>`).join('');
+  sel.innerHTML = `<option value="">${i18n[lang].f_ville_all}</option>` + villes.map(v=>`<option value="${v}">${v}</option>`).join('');
   sel.value = current;
 }
-function statusLabel(s){ return s==='dispo'?'Disponible': s==='reserve'?'Réservé':'Vendu'; }
+function statusLabel(s){ const t=i18n[lang]; return s==='dispo'?t.st_dispo: s==='reserve'?t.st_reserve:t.st_vendu; }
 function statusClass(s){ return s==='dispo'?'st-dispo': s==='reserve'?'st-reserve':'st-vendu'; }
+
+/* ---------------- LOCATION MEUBLÉE : helpers ---------------- */
+function populateVilleFilterLoc(){
+  const sel = document.getElementById('lfVille');
+  const current = sel.value;
+  const villes = [...new Set(locations.map(l=>l.ville.split(',')[0]))];
+  sel.innerHTML = `<option value="">${i18n[lang].f_ville_all}</option>` + villes.map(v=>`<option value="${v}">${v}</option>`).join('');
+  sel.value = current;
+}
+function locStatusLabel(s){ const t=i18n[lang]; return s==='dispo'?t.st_dispo: s==='reserve'?t.st_reserve:t.st_loue; }
+function locStatusClass(s){ return s==='dispo'?'st-dispo': s==='reserve'?'st-reserve':'st-vendu'; }
+function typeLabel(ty){ const t=i18n[lang]; return ty==='maison'?t.type_maison: ty==='immeuble'?t.type_immeuble:t.type_appartement; }
+const equipFields = [
+  ['wifi','equip_wifi'],['clim','equip_clim'],['cuisine','equip_cuisine'],
+  ['generateur','equip_generateur'],['eau','equip_eau'],['parking','equip_parking'],['securite','equip_securite']
+];
+function equipListOf(l){
+  const t = i18n[lang];
+  return equipFields.filter(([key])=> l[`eq_${key}`]).map(([key,label])=> t[label]);
+}
 
 function renderCatalogue(){
   const ville = document.getElementById('fVille').value;
@@ -740,7 +1089,7 @@ function renderCatalogue(){
     }
     return true;
   });
-  document.getElementById('resultCount').textContent = `${list.length} parcelle${list.length>1?'s':''}`;
+  document.getElementById('resultCount').textContent = i18n[lang].result_count(list.length);
   const grid = document.getElementById('catalogueGrid');
   grid.innerHTML = list.map(p=>`
     <div class="p-card" data-id="${p.id}">
@@ -752,7 +1101,7 @@ function renderCatalogue(){
         <h3>Réf. ${p.id}</h3>
         <div class="p-meta">
           <span>${p.surface} m²</span>
-          <span>${stepsOf(p).filter(Boolean).length}/4 vérifications</span>
+          <span>${i18n[lang].card_verifs(stepsOf(p).filter(Boolean).length)}</span>
         </div>
         <div class="p-price">
           <div><b>${fmt(p.prix)}</b><span> FCFA</span></div>
@@ -760,7 +1109,7 @@ function renderCatalogue(){
         </div>
       </div>
     </div>
-  `).join('') || '<p style="color:var(--ink-soft);font-size:14px;">Aucune parcelle ne correspond à ces critères.</p>';
+  `).join('') || `<p style="color:var(--ink-soft);font-size:14px;">${i18n[lang].aucune_parcelle}</p>`;
 
   grid.querySelectorAll('.p-card').forEach(card=>{
     card.addEventListener('click', ()=> openModal(card.dataset.id));
@@ -773,17 +1122,18 @@ function openModal(id){
   const p = parcelles.find(x=>x.id===id);
   if(!p) return;
   const steps = stepsOf(p);
+  const t = i18n[lang];
   const stepsHtml = steps.map((done,i)=>`
     <div class="chain-step ${done?'':'pending'}">
       <div class="num">${done?'✓':(i+1)}</div>
-      <div class="txt"><b>${stepLabels[i][0]}</b><span>${stepLabels[i][1]} — ${done?'validé':'en attente'}</span></div>
+      <div class="txt"><b>${t.step_labels[i][0]}</b><span>${t.step_labels[i][1]} — ${done?t.step_validated:t.step_pending}</span></div>
     </div>
   `).join('');
 
   document.getElementById('modalContent').innerHTML = `
     <div class="modal-head" style="background:${p.photo_url ? `center/cover no-repeat url('${p.photo_url}')` : gradFor(p.id)}">
       <button class="modal-close" id="closeModalBtn">✕</button>
-      <span class="badge-verified" style="background:rgba(255,255,255,0.9);">${steps.filter(Boolean).length}/4 étapes validées</span>
+      <span class="badge-verified" style="background:rgba(255,255,255,0.9);">${t.modal_steps_done(steps.filter(Boolean).length)}</span>
     </div>
     <div class="modal-body">
       <div>
@@ -791,17 +1141,17 @@ function openModal(id){
         <div class="loc">${p.ville} · ${p.surface} m² · GPS ${p.gps||'—'}</div>
         <p class="desc">${p.description||''}</p>
         <div class="meta-grid">
-          <div class="meta-item"><span>Surface</span><b>${p.surface} m²</b></div>
-          <div class="meta-item"><span>Statut</span><b>${statusLabel(p.statut)}</b></div>
+          <div class="meta-item"><span>${t.th_surface}</span><b>${p.surface} m²</b></div>
+          <div class="meta-item"><span>${t.th_statut}</span><b>${statusLabel(p.statut)}</b></div>
         </div>
         <div class="chain-list">${stepsHtml}</div>
       </div>
       <div class="side-box">
         <div class="price-big mono">${fmt(p.prix)} FCFA</div>
         <div class="price-alt">≈ ${fmt(Math.round(p.prix*rates['EUR'].rate))} € · ≈ ${fmt(Math.round(p.prix*rates['USD'].rate))} $</div>
-        <button class="cta-btn"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 8l9 6 9-6"/><rect x="3" y="5" width="18" height="14" rx="1.5"/></svg> Contacter un conseiller</button>
-        <button class="cta-ghost">Demander une visite vidéo</button>
-        <div class="note">Une procuration notariée vous permet de mandater notre agent local pour signer en votre nom, sans déplacement.</div>
+        <button class="cta-btn"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 8l9 6 9-6"/><rect x="3" y="5" width="18" height="14" rx="1.5"/></svg> ${t.contacter_conseiller}</button>
+        <button class="cta-ghost">${t.visite_video}</button>
+        <div class="note">${t.modal_note}</div>
       </div>
     </div>
   `;
@@ -812,6 +1162,85 @@ function closeModal(){ document.getElementById('modalOverlay').classList.remove(
 document.getElementById('modalOverlay').addEventListener('click', e=>{
   if(e.target.id==='modalOverlay') closeModal();
 });
+
+/* ---------------- LOCATION MEUBLÉE : catalogue & modal ---------------- */
+function renderCatalogueLocation(){
+  const ville = document.getElementById('lfVille').value;
+  const type = document.getElementById('lfType').value;
+  const statut = document.getElementById('lfStatut').value;
+  const loyerRange = document.getElementById('lfLoyer').value;
+  let list = locations.filter(l=>{
+    if(ville && !l.ville.startsWith(ville)) return false;
+    if(type && l.type!==type) return false;
+    if(statut && l.statut!==statut) return false;
+    if(loyerRange){
+      const [min,max] = loyerRange.split('-').map(Number);
+      if(l.loyer<min || l.loyer>max) return false;
+    }
+    return true;
+  });
+  document.getElementById('resultCountLoc').textContent = i18n[lang].result_count(list.length);
+  const grid = document.getElementById('locationGrid');
+  grid.innerHTML = list.map(l=>`
+    <div class="p-card" data-id="${l.id}">
+      <div class="p-thumb" style="background:${l.photo_url ? `center/cover no-repeat url('${l.photo_url}')` : gradFor(l.id)}">
+        <span class="l-type-badge">${typeLabel(l.type)}</span>
+        <span class="p-status ${locStatusClass(l.statut)}">${locStatusLabel(l.statut)}</span>
+      </div>
+      <div class="p-body">
+        <h3>Réf. ${l.id}</h3>
+        <div class="p-meta">
+          <span>${l.ville.split(',')[0]}</span>
+          <span>${l.chambres} ch. · ${l.surface} m²</span>
+        </div>
+        <div class="p-price">
+          <div><b>${fmt(l.loyer)}</b><span> FCFA/${i18n[lang].par_mois}</span></div>
+          <span>${devise!=='FCFA' ? '≈ '+fmt(Math.round(l.loyer*rates[devise].rate))+' '+rates[devise].label : ''}</span>
+        </div>
+      </div>
+    </div>
+  `).join('') || `<p style="color:var(--ink-soft);font-size:14px;">${i18n[lang].aucune_location}</p>`;
+
+  grid.querySelectorAll('.p-card').forEach(card=>{
+    card.addEventListener('click', ()=> openLocationModal(card.dataset.id));
+  });
+}
+['lfVille','lfType','lfStatut','lfLoyer'].forEach(id=> document.getElementById(id).addEventListener('change', renderCatalogueLocation));
+
+function openLocationModal(id){
+  const l = locations.find(x=>x.id===id);
+  if(!l) return;
+  const t = i18n[lang];
+  const equipHtml = equipListOf(l).map(label=>`<span class="equip-tag">✓ ${label}</span>`).join('') || `<span class="equip-tag">${t.equip_none}</span>`;
+
+  document.getElementById('modalContent').innerHTML = `
+    <div class="modal-head" style="background:${l.photo_url ? `center/cover no-repeat url('${l.photo_url}')` : gradFor(l.id)}">
+      <button class="modal-close" id="closeModalBtn">✕</button>
+      <span class="badge-verified" style="background:rgba(255,255,255,0.9);">${typeLabel(l.type)}</span>
+    </div>
+    <div class="modal-body">
+      <div>
+        <h2>Réf. ${l.id}</h2>
+        <div class="loc">${l.ville} · ${l.chambres} ${t.th_chambres.toLowerCase()} · ${l.surface} m²</div>
+        <p class="desc">${l.description||''}</p>
+        <div class="meta-grid">
+          <div class="meta-item"><span>${t.th_surface}</span><b>${l.surface} m²</b></div>
+          <div class="meta-item"><span>${t.th_statut}</span><b>${locStatusLabel(l.statut)}</b></div>
+        </div>
+        <div class="equip-list">${equipHtml}</div>
+      </div>
+      <div class="side-box">
+        <div class="price-big mono">${fmt(l.loyer)} FCFA<span style="font-size:13px;">/${t.par_mois}</span></div>
+        <div class="price-alt">≈ ${fmt(Math.round(l.loyer*rates['EUR'].rate))} € · ≈ ${fmt(Math.round(l.loyer*rates['USD'].rate))} $ /${t.par_mois}</div>
+        <button class="cta-btn"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 8l9 6 9-6"/><rect x="3" y="5" width="18" height="14" rx="1.5"/></svg> ${t.loc_contacter}</button>
+        <button class="cta-ghost">${t.loc_visite}</button>
+        <div class="note">${t.loc_modal_note}</div>
+      </div>
+    </div>
+  `;
+  document.getElementById('closeModalBtn').addEventListener('click', closeModal);
+  document.getElementById('modalOverlay').classList.add('active');
+}
 
 /* ---------------- GESTION ---------------- */
 function renderGestion(){
@@ -835,9 +1264,9 @@ function renderGestion(){
       <td class="mono">${fmt(p.prix)}</td>
       <td>
         <select class="statut-select" data-id="${p.id}">
-          <option value="dispo" ${p.statut==='dispo'?'selected':''}>Disponible</option>
-          <option value="reserve" ${p.statut==='reserve'?'selected':''}>Réservé</option>
-          <option value="vendu" ${p.statut==='vendu'?'selected':''}>Vendu</option>
+          <option value="dispo" ${p.statut==='dispo'?'selected':''}>${i18n[lang].st_dispo}</option>
+          <option value="reserve" ${p.statut==='reserve'?'selected':''}>${i18n[lang].st_reserve}</option>
+          <option value="vendu" ${p.statut==='vendu'?'selected':''}>${i18n[lang].st_vendu}</option>
         </select>
       </td>
       <td><button class="icon-btn del-btn" data-id="${p.id}" title="Supprimer"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 7h16M9 7V5a1 1 0 011-1h4a1 1 0 011 1v2m2 0l-1 13a1 1 0 01-1 1H8a1 1 0 01-1-1L6 7h12z"/></svg></button></td>
@@ -878,13 +1307,13 @@ function renderGestion(){
   });
 }
 
-async function uploadPhoto(file, parcelleId){
+async function uploadPhoto(file, parcelleId, bucket='parcelles-photos'){
   if(!file) return null;
   const ext = file.name.split('.').pop();
   const path = `${parcelleId}-${Date.now()}.${ext}`;
-  const {error} = await supabaseClient.storage.from('parcelles-photos').upload(path, file, {upsert:true});
+  const {error} = await supabaseClient.storage.from(bucket).upload(path, file, {upsert:true});
   if(error){ alert("Erreur upload photo : "+error.message); return null; }
-  const {data} = supabaseClient.storage.from('parcelles-photos').getPublicUrl(path);
+  const {data} = supabaseClient.storage.from(bucket).getPublicUrl(path);
   return data.publicUrl;
 }
 
@@ -914,8 +1343,126 @@ document.getElementById('addParcelleBtn').addEventListener('click', async ()=>{
   await loadParcelles();
 });
 
+/* ---------------- GESTION : LOCATIONS MEUBLÉES ---------------- */
+function renderGestionLocations(){
+  document.getElementById('statLocTotal').textContent = locations.length;
+  document.getElementById('statLocDispo').textContent = locations.filter(l=>l.statut==='dispo').length;
+  document.getElementById('statLocLoue').textContent = locations.filter(l=>l.statut==='loue').length;
+  const valeur = locations.reduce((a,l)=>a+Number(l.loyer),0)/1000000;
+  document.getElementById('statLocValeur').textContent = valeur.toFixed(1);
+
+  const tbody = document.getElementById('gestionLocTbody');
+  tbody.innerHTML = locations.map(l=>`
+    <tr data-id="${l.id}">
+      <td>
+        <div class="gestion-thumb" style="background:${l.photo_url ? `center/cover no-repeat url('${l.photo_url}')` : gradFor(l.id)}"></div>
+        <input type="file" accept="image/*" class="loc-photo-input" data-id="${l.id}" style="display:none;">
+        <button class="icon-btn loc-photo-btn" data-id="${l.id}" title="Changer la photo"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 7h3l2-2h6l2 2h3v13H4z"/><circle cx="12" cy="13" r="3.5"/></svg></button>
+      </td>
+      <td class="mono">${l.id}</td>
+      <td>${l.ville}</td>
+      <td>
+        <select class="type-select" data-id="${l.id}">
+          <option value="appartement" ${l.type==='appartement'?'selected':''}>${i18n[lang].type_appartement}</option>
+          <option value="maison" ${l.type==='maison'?'selected':''}>${i18n[lang].type_maison}</option>
+          <option value="immeuble" ${l.type==='immeuble'?'selected':''}>${i18n[lang].type_immeuble}</option>
+        </select>
+      </td>
+      <td>${l.chambres}</td>
+      <td class="mono">${fmt(l.loyer)}</td>
+      <td>
+        <select class="loc-statut-select" data-id="${l.id}">
+          <option value="dispo" ${l.statut==='dispo'?'selected':''}>${i18n[lang].st_dispo}</option>
+          <option value="reserve" ${l.statut==='reserve'?'selected':''}>${i18n[lang].st_reserve}</option>
+          <option value="loue" ${l.statut==='loue'?'selected':''}>${i18n[lang].st_loue}</option>
+        </select>
+      </td>
+      <td><button class="icon-btn loc-del-btn" data-id="${l.id}" title="Supprimer"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 7h16M9 7V5a1 1 0 011-1h4a1 1 0 011 1v2m2 0l-1 13a1 1 0 01-1 1H8a1 1 0 01-1-1L6 7h12z"/></svg></button></td>
+    </tr>
+  `).join('');
+
+  tbody.querySelectorAll('.loc-photo-btn').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      tbody.querySelector(`.loc-photo-input[data-id="${btn.dataset.id}"]`).click();
+    });
+  });
+  tbody.querySelectorAll('.loc-photo-input').forEach(inp=>{
+    inp.addEventListener('change', async ()=>{
+      const file = inp.files[0];
+      if(!file) return;
+      const url = await uploadPhoto(file, inp.dataset.id, 'locations-photos');
+      if(!url) return;
+      const {error} = await supabaseClient.from('locations_meublees').update({photo_url: url}).eq('id', inp.dataset.id);
+      if(error){ alert("Erreur : "+error.message); return; }
+      await loadLocations();
+    });
+  });
+  tbody.querySelectorAll('.type-select').forEach(sel=>{
+    sel.addEventListener('change', async ()=>{
+      sel.disabled = true;
+      const {error} = await supabaseClient.from('locations_meublees').update({type: sel.value}).eq('id', sel.dataset.id);
+      if(error){ alert("Erreur : "+error.message); sel.disabled=false; return; }
+      await loadLocations();
+    });
+  });
+  tbody.querySelectorAll('.loc-statut-select').forEach(sel=>{
+    sel.addEventListener('change', async ()=>{
+      sel.disabled = true;
+      const {error} = await supabaseClient.from('locations_meublees').update({statut: sel.value}).eq('id', sel.dataset.id);
+      if(error){ alert("Erreur : "+error.message); sel.disabled=false; return; }
+      await loadLocations();
+    });
+  });
+  tbody.querySelectorAll('.loc-del-btn').forEach(btn=>{
+    btn.addEventListener('click', async ()=>{
+      if(!confirm(`Supprimer le logement ${btn.dataset.id} ?`)) return;
+      const {error} = await supabaseClient.from('locations_meublees').delete().eq('id', btn.dataset.id);
+      if(error){ alert("Erreur : "+error.message); return; }
+      await loadLocations();
+    });
+  });
+}
+
+document.getElementById('addLocationBtn').addEventListener('click', async ()=>{
+  if(!supabaseClient){ alert("Configure d'abord supabase-config.js (voir README.md)."); return; }
+  const ville = document.getElementById('newLocVille').value.trim();
+  const type = document.getElementById('newLocType').value;
+  const chambres = Number(document.getElementById('newLocChambres').value);
+  const surface = Number(document.getElementById('newLocSurface').value);
+  const loyer = Number(document.getElementById('newLocLoyer').value);
+  const statut = document.getElementById('newLocStatut').value;
+  const photoFile = document.getElementById('newLocPhoto').files[0];
+  if(!ville || !chambres || !loyer){
+    alert("Merci de renseigner la ville, le nombre de chambres et le loyer.");
+    return;
+  }
+  const id = "LM-" + Math.floor(1000 + Math.random()*9000);
+  const photo_url = await uploadPhoto(photoFile, id, 'locations-photos');
+  const {error} = await supabaseClient.from('locations_meublees').insert({
+    id, ville, type, chambres, surface, loyer, statut, photo_url,
+    description:"Nouveau logement meublé ajouté par l'équipe de gestion, en cours de documentation complète.",
+    eq_wifi: document.getElementById('eqWifi').checked,
+    eq_clim: document.getElementById('eqClim').checked,
+    eq_cuisine: document.getElementById('eqCuisine').checked,
+    eq_generateur: document.getElementById('eqGenerateur').checked,
+    eq_eau: document.getElementById('eqEau').checked,
+    eq_parking: document.getElementById('eqParking').checked,
+    eq_securite: document.getElementById('eqSecurite').checked
+  });
+  if(error){ alert("Erreur : "+error.message); return; }
+  document.getElementById('newLocVille').value='';
+  document.getElementById('newLocChambres').value='';
+  document.getElementById('newLocSurface').value='';
+  document.getElementById('newLocLoyer').value='';
+  document.getElementById('newLocPhoto').value='';
+  ['eqWifi','eqClim','eqCuisine','eqGenerateur','eqEau','eqParking','eqSecurite'].forEach(id=> document.getElementById(id).checked=false);
+  await loadLocations();
+});
+
 /* ---------------- INIT ---------------- */
+applyLang();
 loadParcelles();
+loadLocations();
 </script>
 </body>
 </html>

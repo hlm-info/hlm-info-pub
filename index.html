@@ -345,6 +345,27 @@
     .gestion-layout{grid-template-columns:1fr;}
     .foot-grid{grid-template-columns:1fr;}
     nav.tabs{display:none;}
+    .menu-btn{display:flex;}
+  }
+  .menu-btn{
+    display:none;align-items:center;justify-content:center;
+    border:1px solid var(--line);background:var(--card);border-radius:var(--radius);
+    padding:8px 10px;color:var(--ink);
+  }
+  .mobile-tabs{
+    display:none;flex-direction:column;gap:2px;
+    padding:8px 20px 16px;border-top:1px solid var(--line);
+    background:var(--bg);
+  }
+  .mobile-tabs.open{display:flex;}
+  .mobile-tabs button{
+    text-align:left;padding:13px 14px;border:none;background:transparent;
+    font-size:14.5px;font-weight:600;color:var(--ink-soft);border-radius:var(--radius);
+  }
+  .mobile-tabs button.active{background:var(--bg-soft);color:var(--ink);}
+  @media(max-width:640px){
+    .head-actions .cta-btn{display:none;}
+    .head-actions .devise-btn{display:none;}
   }
   @media(max-width:640px){
     .grid-cards{grid-template-columns:1fr;}
@@ -376,8 +397,17 @@
       <button class="lang-btn" id="langBtn" title="Changer de langue / Switch language">🌐 <span id="langFR" class="cur">FR</span>/<span id="langEN">EN</span></button>
       <button class="devise-btn" id="deviseBtn">1 200 000 FCFA <span id="deviseAlt">≈ 1 829 €</span></button>
       <button class="cta-btn" data-view="catalogue" data-i18n="nav_cta_voir">Voir les parcelles</button>
+      <button class="menu-btn" id="menuBtn" aria-label="Menu" aria-expanded="false">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
+      </button>
     </div>
   </div>
+  <nav class="mobile-tabs" id="mobileTabs">
+    <button class="tab-btn mobile-tab-btn active" data-view="accueil" data-i18n="nav_accueil">Accueil</button>
+    <button class="tab-btn mobile-tab-btn" data-view="catalogue" data-i18n="nav_catalogue">Catalogue</button>
+    <button class="tab-btn mobile-tab-btn" data-view="location" data-i18n="nav_location">Location</button>
+    <button class="tab-btn mobile-tab-btn" data-view="gestion" data-i18n="nav_gestion">Gestion</button>
+  </nav>
 </header>
 
 <!-- ================= ACCUEIL ================= -->
@@ -987,11 +1017,18 @@ function switchView(name){
   document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
   document.getElementById('view-'+name).classList.add('active');
   document.querySelectorAll('.tab-btn').forEach(b=>b.classList.toggle('active', b.dataset.view===name));
+  document.getElementById('mobileTabs').classList.remove('open');
+  document.getElementById('menuBtn').setAttribute('aria-expanded','false');
   if(name==='catalogue') renderCatalogue();
   if(name==='location') renderCatalogueLocation();
   if(name==='gestion'){ checkAuthAndRenderGestion(); }
   window.scrollTo({top:0,behavior:'smooth'});
 }
+document.getElementById('menuBtn').addEventListener('click', ()=>{
+  const nav = document.getElementById('mobileTabs');
+  const open = nav.classList.toggle('open');
+  document.getElementById('menuBtn').setAttribute('aria-expanded', open ? 'true' : 'false');
+});
 
 /* ---------------- AUTHENTIFICATION ---------------- */
 async function checkAuthAndRenderGestion(){

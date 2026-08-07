@@ -335,6 +335,11 @@
     box-shadow:0 12px 24px -8px rgba(31,74,61,0.6);z-index:60;border:none;
   }
 
+  .menu-btn{
+    display:none;align-items:center;justify-content:center;
+    border:1px solid var(--line);background:var(--card);border-radius:var(--radius);
+    padding:8px 10px;color:var(--ink);
+  }
   @media(max-width:960px){
     .hero-grid{grid-template-columns:1fr;}
     .process-grid{grid-template-columns:repeat(2,1fr);}
@@ -346,11 +351,6 @@
     .foot-grid{grid-template-columns:1fr;}
     nav.tabs{display:none;}
     .menu-btn{display:flex;}
-  }
-  .menu-btn{
-    display:none;align-items:center;justify-content:center;
-    border:1px solid var(--line);background:var(--card);border-radius:var(--radius);
-    padding:8px 10px;color:var(--ink);
   }
   .mobile-tabs{
     display:none;flex-direction:column;gap:2px;

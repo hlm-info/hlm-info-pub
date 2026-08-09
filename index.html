@@ -316,6 +316,12 @@
   }
   .icon-btn{background:none;border:none;color:var(--ink-soft);padding:4px;border-radius:4px;}
   .gestion-thumb{width:44px;height:34px;border-radius:2px;background-color:var(--bg-soft);display:inline-block;vertical-align:middle;margin-right:4px;}
+  .obs-cell{display:flex;align-items:center;gap:6px;max-width:180px;}
+  .obs-text{font-size:12px;color:var(--ink-soft);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:140px;}
+  .obs-empty{font-size:12px;color:var(--line);font-style:italic;}
+  .obs-block{margin-top:18px;padding:14px 16px;background:var(--bg-soft);border-radius:var(--radius);}
+  .obs-block b{display:block;font-size:12.5px;text-transform:uppercase;letter-spacing:0.04em;color:var(--ink-soft);margin-bottom:6px;}
+  .obs-block p{font-size:13.5px;color:var(--ink);line-height:1.5;white-space:pre-wrap;}
   .icon-btn:hover{color:var(--danger);background:#F3E2DD;}
 
   .add-form{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:18px;}
@@ -661,7 +667,7 @@
       <div class="gestion-layout">
         <table class="g-table">
           <thead>
-            <tr><th data-i18n="th_photo">Photo</th><th data-i18n="th_ref">Référence</th><th data-i18n="th_ville">Ville</th><th data-i18n="th_surface">Surface</th><th data-i18n="th_prix">Prix FCFA</th><th data-i18n="th_statut">Statut</th><th></th></tr>
+            <tr><th data-i18n="th_photo">Photo</th><th data-i18n="th_ref">Référence</th><th data-i18n="th_ville">Ville</th><th data-i18n="th_surface">Surface</th><th data-i18n="th_prix">Prix FCFA</th><th data-i18n="th_statut">Statut</th><th data-i18n="th_observations">Observations</th><th></th></tr>
           </thead>
           <tbody id="gestionTbody"></tbody>
         </table>
@@ -680,6 +686,8 @@
             <option value="reserve" data-i18n="st_reserve">Réservé</option>
             <option value="vendu" data-i18n="st_vendu">Vendu</option>
           </select>
+          <label data-i18n="add_observations">Observations (optionnel)</label>
+          <textarea id="newObservations" rows="3" placeholder="ex. Terrain plat, proche d'une école, accès goudronné..." style="width:100%;padding:8px;font-family:inherit;font-size:13px;resize:vertical;"></textarea>
           <label data-i18n="add_photo">Photo</label>
           <input type="file" id="newPhoto" accept="image/*">
           <button class="cta-btn" id="addParcelleBtn"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M12 5v14M5 12h14"/></svg> <span data-i18n="add_btn">Ajouter au catalogue</span></button>
@@ -880,7 +888,10 @@ const i18n = {
     msg_contact_parcelle:(p)=> `Bonjour, je suis intéressé(e) par la parcelle Réf. ${p.id} à ${p.ville} (${fmt(p.prix)} FCFA). Pouvez-vous me donner plus d'informations ?`,
     msg_visite_parcelle:(p)=> `Bonjour, je souhaite demander une visite vidéo pour la parcelle Réf. ${p.id} à ${p.ville}.`,
     msg_contact_location:(l)=> `Bonjour, je suis intéressé(e) par le logement Réf. ${l.id} à ${l.ville} (${fmt(l.loyer)} FCFA/mois). Pouvez-vous me donner plus d'informations ?`,
-    msg_visite_location:(l)=> `Bonjour, je souhaite demander une visite vidéo pour le logement Réf. ${l.id} à ${l.ville}.`
+    msg_visite_location:(l)=> `Bonjour, je souhaite demander une visite vidéo pour le logement Réf. ${l.id} à ${l.ville}.`,
+    add_observations:"Observations (optionnel)", th_observations:"Observations",
+    obs_empty:"—", obs_edit:"Modifier les observations", obs_prompt:"Observations sur cette parcelle :",
+    obs_label:"Observations"
   },
   en: {
     nav_accueil:"Home", nav_catalogue:"Listings", nav_gestion:"Management", nav_cta_voir:"View listings",
@@ -959,7 +970,10 @@ const i18n = {
     msg_contact_parcelle:(p)=> `Hello, I'm interested in plot Ref. ${p.id} in ${p.ville} (${fmt(p.prix)} FCFA). Could you give me more information?`,
     msg_visite_parcelle:(p)=> `Hello, I'd like to request a video visit for plot Ref. ${p.id} in ${p.ville}.`,
     msg_contact_location:(l)=> `Hello, I'm interested in the home Ref. ${l.id} in ${l.ville} (${fmt(l.loyer)} FCFA/month). Could you give me more information?`,
-    msg_visite_location:(l)=> `Hello, I'd like to request a video visit for the home Ref. ${l.id} in ${l.ville}.`
+    msg_visite_location:(l)=> `Hello, I'd like to request a video visit for the home Ref. ${l.id} in ${l.ville}.`,
+    add_observations:"Observations (optional)", th_observations:"Observations",
+    obs_empty:"—", obs_edit:"Edit observations", obs_prompt:"Observations for this plot:",
+    obs_label:"Observations"
   }
 };
 let lang = localStorage.getItem('hlm_lang') || 'fr';
@@ -1196,6 +1210,7 @@ function openModal(id){
           <div class="meta-item"><span>${t.th_statut}</span><b>${statusLabel(p.statut)}</b></div>
         </div>
         <div class="chain-list">${stepsHtml}</div>
+        ${p.observations ? `<div class="obs-block"><b>${t.obs_label}</b><p>${p.observations}</p></div>` : ''}
       </div>
       <div class="side-box">
         <div class="price-big mono">${fmt(p.prix)} FCFA</div>
@@ -1324,9 +1339,26 @@ function renderGestion(){
           <option value="vendu" ${p.statut==='vendu'?'selected':''}>${i18n[lang].st_vendu}</option>
         </select>
       </td>
+      <td>
+        <div class="obs-cell">
+          ${p.observations ? `<span class="obs-text" title="${p.observations.replace(/"/g,'&quot;')}">${p.observations}</span>` : `<span class="obs-empty">${i18n[lang].obs_empty}</span>`}
+          <button class="icon-btn obs-btn" data-id="${p.id}" title="${i18n[lang].obs_edit}"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 20h9M16.5 3.5a2.1 2.1 0 013 3L7 19l-4 1 1-4L16.5 3.5z"/></svg></button>
+        </div>
+      </td>
       <td><button class="icon-btn del-btn" data-id="${p.id}" title="Supprimer"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 7h16M9 7V5a1 1 0 011-1h4a1 1 0 011 1v2m2 0l-1 13a1 1 0 01-1 1H8a1 1 0 01-1-1L6 7h12z"/></svg></button></td>
     </tr>
   `).join('');
+
+  tbody.querySelectorAll('.obs-btn').forEach(btn=>{
+    btn.addEventListener('click', async ()=>{
+      const p = parcelles.find(x=>x.id===btn.dataset.id);
+      const val = prompt(i18n[lang].obs_prompt, p.observations || '');
+      if(val===null) return;
+      const {error} = await supabaseClient.from('parcelles').update({observations: val.trim() || null}).eq('id', btn.dataset.id);
+      if(error){ alert("Erreur : "+error.message); return; }
+      await loadParcelles();
+    });
+  });
 
   tbody.querySelectorAll('.photo-btn').forEach(btn=>{
     btn.addEventListener('click', ()=>{
@@ -1378,6 +1410,7 @@ document.getElementById('addParcelleBtn').addEventListener('click', async ()=>{
   const surface = Number(document.getElementById('newSurface').value);
   const prix = Number(document.getElementById('newPrix').value);
   const statut = document.getElementById('newStatut').value;
+  const observations = document.getElementById('newObservations').value.trim();
   const photoFile = document.getElementById('newPhoto').files[0];
   if(!ville || !surface || !prix){
     alert("Merci de renseigner la ville, la surface et le prix.");
@@ -1387,6 +1420,7 @@ document.getElementById('addParcelleBtn').addEventListener('click', async ()=>{
   const photo_url = await uploadPhoto(photoFile, id);
   const {error} = await supabaseClient.from('parcelles').insert({
     id, ville, surface, prix, statut, gps:"—", photo_url,
+    observations: observations || null,
     description:"Nouvelle parcelle ajoutée par l'équipe de gestion, en cours de documentation complète.",
     etape_titre:true, etape_bornage:false, etape_mandataire:false, etape_notarie:false
   });
@@ -1394,6 +1428,7 @@ document.getElementById('addParcelleBtn').addEventListener('click', async ()=>{
   document.getElementById('newVille').value='';
   document.getElementById('newSurface').value='';
   document.getElementById('newPrix').value='';
+  document.getElementById('newObservations').value='';
   document.getElementById('newPhoto').value='';
   await loadParcelles();
 });

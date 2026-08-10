@@ -355,6 +355,8 @@
   footer p{font-size:13px;line-height:1.7;color:#A8A395;max-width:34ch;}
   footer ul{list-style:none;padding:0;margin:0;}
   footer li{font-size:13px;margin-bottom:9px;color:#B7B2A3;}
+  .footer-link{background:none;border:none;padding:0;margin:0;font:inherit;color:inherit;cursor:pointer;text-decoration:underline;text-decoration-color:rgba(183,178,163,0.35);text-underline-offset:3px;}
+  .footer-link:hover{color:#fff;text-decoration-color:rgba(255,255,255,0.6);}
   .foot-bottom{border-top:1px solid #38352C;padding-top:20px;font-size:11.5px;color:#7C7869;display:flex;justify-content:space-between;}
 
   .whatsapp-fab{
@@ -419,7 +421,6 @@
       <button class="tab-btn active" data-view="accueil" data-i18n="nav_accueil">Accueil</button>
       <button class="tab-btn" data-view="catalogue" data-i18n="nav_catalogue">Catalogue</button>
       <button class="tab-btn" data-view="location" data-i18n="nav_location">Location</button>
-      <button class="tab-btn" data-view="gestion" data-i18n="nav_gestion">Gestion</button>
     </nav>
     <div class="head-actions">
       <button class="lang-btn" id="langBtn" title="Changer de langue / Switch language">🌐 <span id="langFR" class="cur">FR</span>/<span id="langEN">EN</span></button>
@@ -434,7 +435,6 @@
     <button class="tab-btn mobile-tab-btn active" data-view="accueil" data-i18n="nav_accueil">Accueil</button>
     <button class="tab-btn mobile-tab-btn" data-view="catalogue" data-i18n="nav_catalogue">Catalogue</button>
     <button class="tab-btn mobile-tab-btn" data-view="location" data-i18n="nav_location">Location</button>
-    <button class="tab-btn mobile-tab-btn" data-view="gestion" data-i18n="nav_gestion">Gestion</button>
   </nav>
 </header>
 
@@ -449,7 +449,7 @@
         <p class="lead" data-i18n="hero_lead">HLM INFO PUB vérifie chaque titre foncier, mandate un agent local pour vous représenter, et vous accompagne du premier appel vidéo jusqu'à la remise de vos documents authentifiés — où que vous soyez.</p>
         <div class="hero-cta">
           <button class="cta-btn" data-view="catalogue" data-i18n="hero_cta1">Explorer le catalogue</button>
-          <button class="cta-ghost" data-view="gestion" data-i18n="hero_cta2">Espace gestion</button>
+          <button class="cta-ghost" data-view="location" data-i18n="hero_cta2">Voir les locations meublées</button>
         </div>
         <div class="stat-row">
           <div class="stat"><b>312</b><span data-i18n="stat1">parcelles vérifiées</span></div>
@@ -792,7 +792,7 @@
           <li data-i18n="foot_li1">Catalogue</li>
           <li data-i18n="foot_li2">Comment ça marche</li>
           <li data-i18n="foot_li3">Devenir mandataire local</li>
-          <li data-i18n="foot_li4">Espace gestion</li>
+          <li><button type="button" class="footer-link" data-view="gestion" data-i18n="foot_li4">Espace gestion</button></li>
         </ul>
       </div>
       <div>
@@ -834,7 +834,7 @@ const i18n = {
     hero_eyebrow:"Depuis Paris, Montréal, Boston ou Libreville",
     hero_h1:"Achetez une parcelle au Bénin <em>sans jamais vous faire avoir</em> à distance.",
     hero_lead:"HLM INFO PUB vérifie chaque titre foncier, mandate un agent local pour vous représenter, et vous accompagne du premier appel vidéo jusqu'à la remise de vos documents authentifiés — où que vous soyez.",
-    hero_cta1:"Explorer le catalogue", hero_cta2:"Espace gestion",
+    hero_cta1:"Explorer le catalogue", hero_cta2:"Voir les locations meublées",
     stat1:"parcelles vérifiées", stat2:"litige de titre en 4 ans", stat3:"pays de résidence clients",
     cc_title:"Parcelle Réf. AT-0143", cc_loc:"Abomey-Calavi, Zinvié — 600 m²", cc_badge:"✓ Titre vérifié",
     cc_s1_b:"Titre foncier authentifié", cc_s1_s:"Conservation foncière — validé",
@@ -916,7 +916,7 @@ const i18n = {
     hero_eyebrow:"From Paris, Montreal, Boston or Libreville",
     hero_h1:"Buy land in Benin <em>without ever getting scammed</em>, from wherever you are.",
     hero_lead:"HLM INFO PUB verifies every land title, appoints a local agent to represent you, and supports you from the first video call to the delivery of your authenticated documents — wherever you are.",
-    hero_cta1:"Explore the listings", hero_cta2:"Management area",
+    hero_cta1:"Explore the listings", hero_cta2:"View furnished rentals",
     stat1:"verified plots", stat2:"title disputes in 4 years", stat3:"client countries of residence",
     cc_title:"Plot Ref. AT-0143", cc_loc:"Abomey-Calavi, Zinvié — 600 m²", cc_badge:"✓ Title verified",
     cc_s1_b:"Land title authenticated", cc_s1_s:"Land registry — validated",

@@ -631,9 +631,9 @@
         </select>
         <select id="lfLoyer">
           <option value="" data-i18n="f_loyer_all">Tous loyers</option>
-          <option value="0-100000" data-i18n="f_loyer_1">Moins de 100k FCFA/mois</option>
-          <option value="100000-300000" data-i18n="f_loyer_2">100k – 300k FCFA/mois</option>
-          <option value="300000-999999999" data-i18n="f_loyer_3">Plus de 300k FCFA/mois</option>
+          <option value="0-15000" data-i18n="f_loyer_1">Moins de 15k FCFA/jour</option>
+          <option value="15000-40000" data-i18n="f_loyer_2">15k – 40k FCFA/jour</option>
+          <option value="40000-999999999" data-i18n="f_loyer_3">Plus de 40k FCFA/jour</option>
         </select>
         <span class="count" id="resultCountLoc"></span>
       </div>
@@ -717,13 +717,13 @@
         <div class="stat-box"><div class="n" id="statLocTotal">0</div><div class="l" data-i18n="statloc_total">Logements listés</div></div>
         <div class="stat-box"><div class="n" id="statLocDispo">0</div><div class="l" data-i18n="statloc_dispo">Disponibles</div></div>
         <div class="stat-box"><div class="n" id="statLocLoue">0</div><div class="l" data-i18n="statloc_loue">Loués</div></div>
-        <div class="stat-box"><div class="n" id="statLocValeur">0</div><div class="l" data-i18n="statloc_valeur">Loyers cumulés (M FCFA/mois)</div></div>
+        <div class="stat-box"><div class="n" id="statLocValeur">0</div><div class="l" data-i18n="statloc_valeur">Loyers cumulés (M FCFA/jour)</div></div>
       </div>
 
       <div class="gestion-layout">
         <table class="g-table">
           <thead>
-            <tr><th data-i18n="th_photo">Photo</th><th data-i18n="th_ref">Référence</th><th data-i18n="th_ville">Ville</th><th data-i18n="th_type">Type</th><th data-i18n="th_chambres">Chambres</th><th data-i18n="th_loyer">Loyer/mois</th><th data-i18n="th_statut">Statut</th><th></th></tr>
+            <tr><th data-i18n="th_photo">Photo</th><th data-i18n="th_ref">Référence</th><th data-i18n="th_ville">Ville</th><th data-i18n="th_type">Type</th><th data-i18n="th_chambres">Chambres</th><th data-i18n="th_loyer">Loyer/jour</th><th data-i18n="th_statut">Statut</th><th></th></tr>
           </thead>
           <tbody id="gestionLocTbody"></tbody>
         </table>
@@ -742,8 +742,8 @@
           <input type="number" id="newLocChambres" placeholder="ex. 3">
           <label data-i18n="add_surface">Surface (m²)</label>
           <input type="number" id="newLocSurface" placeholder="ex. 120">
-          <label data-i18n="addloc_loyer">Loyer mensuel (FCFA)</label>
-          <input type="number" id="newLocLoyer" placeholder="ex. 250000">
+          <label data-i18n="addloc_loyer">Loyer journalier (FCFA)</label>
+          <input type="number" id="newLocLoyer" placeholder="ex. 25000">
           <label data-i18n="add_statut">Statut</label>
           <select id="newLocStatut">
             <option value="dispo" data-i18n="st_dispo">Disponible</option>
@@ -889,8 +889,8 @@ const i18n = {
     loc_eyebrow:"Location meublée", loc_h2:"Appartements et maisons entièrement meublés",
     loc_p:"Emménagez directement, sans rien acheter : logements prêts à vivre, gérés à distance pour la diaspora.",
     f_type_all:"Tous types", type_appartement:"Appartement", type_maison:"Maison", type_immeuble:"Immeuble entier",
-    f_loyer_all:"Tous loyers", f_loyer_1:"Moins de 100k FCFA/mois", f_loyer_2:"100k – 300k FCFA/mois", f_loyer_3:"Plus de 300k FCFA/mois",
-    st_loue:"Loué", par_mois:"mois",
+    f_loyer_all:"Tous loyers", f_loyer_1:"Moins de 15k FCFA/jour", f_loyer_2:"15k – 40k FCFA/jour", f_loyer_3:"Plus de 40k FCFA/jour",
+    st_loue:"Loué", par_jour:"jour",
     aucune_location:"Aucun logement ne correspond à ces critères.",
     equip_wifi:"Wifi", equip_clim:"Climatisation", equip_cuisine:"Cuisine équipée",
     equip_generateur:"Groupe électrogène", equip_eau:"Eau courante", equip_parking:"Parking", equip_securite:"Sécurité 24/7",
@@ -898,13 +898,13 @@ const i18n = {
     loc_contacter:"Contacter un conseiller", loc_visite:"Demander une visite vidéo",
     loc_modal_note:"Bail flexible, état des lieux filmé et loyer réglable en devises depuis l'étranger.",
     ges_tab_parcelles:"Parcelles", ges_tab_locations:"Location meublée",
-    statloc_total:"Logements listés", statloc_dispo:"Disponibles", statloc_loue:"Loués", statloc_valeur:"Loyers cumulés (M FCFA/mois)",
-    th_type:"Type", th_chambres:"Chambres", th_loyer:"Loyer/mois",
+    statloc_total:"Logements listés", statloc_dispo:"Disponibles", statloc_loue:"Loués", statloc_valeur:"Loyers cumulés (M FCFA/jour)",
+    th_type:"Type", th_chambres:"Chambres", th_loyer:"Loyer/jour",
     addloc_h3:"Ajouter un logement meublé", addloc_type:"Type de bien", addloc_chambres:"Nombre de chambres",
-    addloc_loyer:"Loyer mensuel (FCFA)", addloc_equip:"Équipements inclus", addloc_btn:"Ajouter le logement",
+    addloc_loyer:"Loyer journalier (FCFA)", addloc_equip:"Équipements inclus", addloc_btn:"Ajouter le logement",
     msg_contact_parcelle:(p)=> `Bonjour, je suis intéressé(e) par la parcelle Réf. ${p.id} à ${p.ville} (${fmt(p.prix)} FCFA). Pouvez-vous me donner plus d'informations ?`,
     msg_visite_parcelle:(p)=> `Bonjour, je souhaite demander une visite vidéo pour la parcelle Réf. ${p.id} à ${p.ville}.`,
-    msg_contact_location:(l)=> `Bonjour, je suis intéressé(e) par le logement Réf. ${l.id} à ${l.ville} (${fmt(l.loyer)} FCFA/mois). Pouvez-vous me donner plus d'informations ?`,
+    msg_contact_location:(l)=> `Bonjour, je suis intéressé(e) par le logement Réf. ${l.id} à ${l.ville} (${fmt(l.loyer)} FCFA/jour). Pouvez-vous me donner plus d'informations ?`,
     msg_visite_location:(l)=> `Bonjour, je souhaite demander une visite vidéo pour le logement Réf. ${l.id} à ${l.ville}.`,
     add_observations:"Observations (optionnel)", th_observations:"Observations",
     obs_empty:"—", obs_edit:"Modifier les observations", obs_prompt:"Observations sur cette parcelle :",
@@ -971,8 +971,8 @@ const i18n = {
     loc_eyebrow:"Furnished rentals", loc_h2:"Fully furnished apartments and houses",
     loc_p:"Move in directly, nothing to buy: move-in ready homes, managed remotely for the diaspora.",
     f_type_all:"All types", type_appartement:"Apartment", type_maison:"House", type_immeuble:"Whole building",
-    f_loyer_all:"All rents", f_loyer_1:"Under 100k FCFA/month", f_loyer_2:"100k – 300k FCFA/month", f_loyer_3:"Over 300k FCFA/month",
-    st_loue:"Rented", par_mois:"month",
+    f_loyer_all:"All rents", f_loyer_1:"Under 15k FCFA/day", f_loyer_2:"15k – 40k FCFA/day", f_loyer_3:"Over 40k FCFA/day",
+    st_loue:"Rented", par_jour:"day",
     aucune_location:"No home matches these criteria.",
     equip_wifi:"Wifi", equip_clim:"Air conditioning", equip_cuisine:"Equipped kitchen",
     equip_generateur:"Generator", equip_eau:"Running water", equip_parking:"Parking", equip_securite:"24/7 security",
@@ -980,13 +980,13 @@ const i18n = {
     loc_contacter:"Contact an advisor", loc_visite:"Request a video visit",
     loc_modal_note:"Flexible lease, filmed move-in inspection, and rent payable in foreign currency from abroad.",
     ges_tab_parcelles:"Plots", ges_tab_locations:"Furnished rentals",
-    statloc_total:"Homes listed", statloc_dispo:"Available", statloc_loue:"Rented", statloc_valeur:"Combined rent (M FCFA/month)",
-    th_type:"Type", th_chambres:"Bedrooms", th_loyer:"Rent/month",
+    statloc_total:"Homes listed", statloc_dispo:"Available", statloc_loue:"Rented", statloc_valeur:"Combined rent (M FCFA/day)",
+    th_type:"Type", th_chambres:"Bedrooms", th_loyer:"Rent/day",
     addloc_h3:"Add a furnished home", addloc_type:"Property type", addloc_chambres:"Number of bedrooms",
-    addloc_loyer:"Monthly rent (FCFA)", addloc_equip:"Included amenities", addloc_btn:"Add the home",
+    addloc_loyer:"Daily rent (FCFA)", addloc_equip:"Included amenities", addloc_btn:"Add the home",
     msg_contact_parcelle:(p)=> `Hello, I'm interested in plot Ref. ${p.id} in ${p.ville} (${fmt(p.prix)} FCFA). Could you give me more information?`,
     msg_visite_parcelle:(p)=> `Hello, I'd like to request a video visit for plot Ref. ${p.id} in ${p.ville}.`,
-    msg_contact_location:(l)=> `Hello, I'm interested in the home Ref. ${l.id} in ${l.ville} (${fmt(l.loyer)} FCFA/month). Could you give me more information?`,
+    msg_contact_location:(l)=> `Hello, I'm interested in the home Ref. ${l.id} in ${l.ville} (${fmt(l.loyer)} FCFA/day). Could you give me more information?`,
     msg_visite_location:(l)=> `Hello, I'd like to request a video visit for the home Ref. ${l.id} in ${l.ville}.`,
     add_observations:"Observations (optional)", th_observations:"Observations",
     obs_empty:"—", obs_edit:"Edit observations", obs_prompt:"Observations for this plot:",
@@ -1276,10 +1276,10 @@ function renderCatalogueLocation(){
         <h3>Réf. ${l.id}</h3>
         <div class="p-meta">
           <span>${l.ville.split(',')[0]}</span>
-          <span>${l.chambres} ch. · ${l.surface} m²</span>
+          <span>${l.chambres} ch.</span>
         </div>
         <div class="p-price">
-          <div><b>${fmt(l.loyer)}</b><span> FCFA/${i18n[lang].par_mois}</span></div>
+          <div><b>${fmt(l.loyer)}</b><span> FCFA/${i18n[lang].par_jour}</span></div>
           <span>${devise!=='FCFA' ? '≈ '+fmt(Math.round(l.loyer*rates[devise].rate))+' '+rates[devise].label : ''}</span>
         </div>
       </div>
@@ -1306,17 +1306,16 @@ function openLocationModal(id){
     <div class="modal-body">
       <div>
         <h2>Réf. ${l.id}</h2>
-        <div class="loc">${l.ville} · ${l.chambres} ${t.th_chambres.toLowerCase()} · ${l.surface} m²</div>
+        <div class="loc">${l.ville} · ${l.chambres} ${t.th_chambres.toLowerCase()}</div>
         <p class="desc">${l.description||''}</p>
         <div class="meta-grid">
-          <div class="meta-item"><span>${t.th_surface}</span><b>${l.surface} m²</b></div>
-          <div class="meta-item"><span>${t.th_statut}</span><b>${locStatusLabel(l.statut)}</b></div>
+          <div class="meta-item" style="grid-column:1/-1;"><span>${t.th_statut}</span><b>${locStatusLabel(l.statut)}</b></div>
         </div>
         <div class="equip-list">${equipHtml}</div>
       </div>
       <div class="side-box">
-        <div class="price-big mono">${fmt(l.loyer)} FCFA<span style="font-size:13px;">/${t.par_mois}</span></div>
-        <div class="price-alt">≈ ${fmt(Math.round(l.loyer*rates['EUR'].rate))} € · ≈ ${fmt(Math.round(l.loyer*rates['USD'].rate))} $ /${t.par_mois}</div>
+        <div class="price-big mono">${fmt(l.loyer)} FCFA<span style="font-size:13px;">/${t.par_jour}</span></div>
+        <div class="price-alt">≈ ${fmt(Math.round(l.loyer*rates['EUR'].rate))} € · ≈ ${fmt(Math.round(l.loyer*rates['USD'].rate))} $ /${t.par_jour}</div>
         <button class="cta-btn" id="contactLocBtn" type="button"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 8l9 6 9-6"/><rect x="3" y="5" width="18" height="14" rx="1.5"/></svg> ${t.loc_contacter}</button>
         <button class="cta-ghost" id="visiteLocBtn" type="button">${t.loc_visite}</button>
         <div class="note">${t.loc_modal_note}</div>

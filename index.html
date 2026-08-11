@@ -132,6 +132,12 @@
   }
   nav.tabs button.active{background:var(--ink);color:var(--bg);}
   .head-actions{display:flex;align-items:center;gap:14px;}
+  .back-home-btn{
+    display:none;align-items:center;gap:6px;
+    border:1px solid var(--line);background:var(--card);color:var(--ink);
+    padding:8px 12px;font-size:12.5px;font-weight:600;border-radius:var(--radius);
+  }
+  .back-home-btn.show{display:flex;}
   .devise-btn{
     border:1px solid var(--line);background:var(--card);
     padding:8px 12px;font-size:12px;font-family:'IBM Plex Mono',monospace;
@@ -381,6 +387,7 @@
     .foot-grid{grid-template-columns:1fr;}
     nav.tabs{display:none;}
     .menu-btn{display:flex;}
+    .back-home-btn{display:none !important;}
   }
   .mobile-tabs{
     display:none;flex-direction:column;gap:2px;
@@ -422,6 +429,10 @@
       <div class="mark">HLM <span>INFO PUB</span></div>
       <div class="tag" data-i18n="logo_tag">FONCIER VÉRIFIÉ · BÉNIN</div>
     </div>
+    <button class="back-home-btn" id="backHomeBtn" data-view="accueil" title="Retour à l'accueil">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M19 12H5M11 18l-6-6 6-6"/></svg>
+      <span data-i18n="back_home">Accueil</span>
+    </button>
     <nav class="tabs">
       <button class="tab-btn active" data-view="accueil" data-i18n="nav_accueil">Accueil</button>
       <button class="tab-btn" data-view="catalogue" data-i18n="nav_catalogue">Catalogue</button>
@@ -812,7 +823,7 @@
     </div>
     <div class="foot-bottom">
       <span data-i18n="foot_copy">© 2026 HLM INFO PUB. Tous droits réservés.</span>
-      <span data-i18n="foot_made">Fait pour la diaspora béninoise</span>
+      <span data-i18n="foot_made">Fait pour la diaspora béninoise et les investisseurs</span>
     </div>
   </div>
 </footer>
@@ -881,7 +892,7 @@ const i18n = {
     foot_desc:"Plateforme d'achat, de vente et de gestion de parcelles au Bénin, pensée pour les Béninois de l'extérieur qui investissent au pays sans pouvoir se déplacer à chaque étape.",
     foot_h_plat:"Plateforme", foot_li1:"Catalogue", foot_li2:"Comment ça marche", foot_li3:"Devenir mandataire local", foot_li4:"Espace gestion",
     foot_h_contact:"Contact", foot_tel:"Tél",
-    foot_copy:"© 2026 HLM INFO PUB. Tous droits réservés.", foot_made:"Fait pour la diaspora béninoise",
+    foot_copy:"© 2026 HLM INFO PUB. Tous droits réservés.", foot_made:"Fait pour la diaspora béninoise et les investisseurs",
     result_count:(n)=> `${n} parcelle${n>1?'s':''}`,
     step_labels:[["Titre foncier authentifié","Conservation foncière"],["Bornage contradictoire","Géomètre agréé"],["Mandataire local désigné","Agent HLM INFO PUB"],["Acte notarié","Signature finale"]],
     step_validated:"validé", step_pending:"en attente",
@@ -914,7 +925,7 @@ const i18n = {
     msg_visite_location:(l)=> `Bonjour, je souhaite demander une visite vidéo pour le logement Réf. ${l.id} à ${l.ville}.`,
     add_observations:"Observations (optionnel)", th_observations:"Observations",
     obs_empty:"—", obs_edit:"Modifier les observations", obs_prompt:"Observations sur cette parcelle :",
-    obs_label:"Observations"
+    obs_label:"Observations", back_home:"Accueil"
   },
   en: {
     nav_accueil:"Home", nav_catalogue:"Listings", nav_gestion:"Management", nav_cta_voir:"View listings",
@@ -963,7 +974,7 @@ const i18n = {
     foot_desc:"A platform for buying, selling and managing land in Benin, built for Beninese abroad who invest back home without being able to travel for every step.",
     foot_h_plat:"Platform", foot_li1:"Listings", foot_li2:"How it works", foot_li3:"Become a local agent", foot_li4:"Management area",
     foot_h_contact:"Contact", foot_tel:"Phone",
-    foot_copy:"© 2026 HLM INFO PUB. All rights reserved.", foot_made:"Made for the Beninese diaspora",
+    foot_copy:"© 2026 HLM INFO PUB. All rights reserved.", foot_made:"Made for the Beninese diaspora and investors",
     result_count:(n)=> `${n} plot${n>1?'s':''}`,
     step_labels:[["Land title authenticated","Land registry"],["Boundary survey","Licensed surveyor"],["Local agent appointed","HLM INFO PUB agent"],["Notarized deed","Final signature"]],
     step_validated:"validated", step_pending:"pending",
@@ -996,7 +1007,7 @@ const i18n = {
     msg_visite_location:(l)=> `Hello, I'd like to request a video visit for the home Ref. ${l.id} in ${l.ville}.`,
     add_observations:"Observations (optional)", th_observations:"Observations",
     obs_empty:"—", obs_edit:"Edit observations", obs_prompt:"Observations for this plot:",
-    obs_label:"Observations"
+    obs_label:"Observations", back_home:"Home"
   }
 };
 let lang = localStorage.getItem('hlm_lang') || 'fr';
@@ -1069,6 +1080,7 @@ function switchView(name){
   document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
   document.getElementById('view-'+name).classList.add('active');
   document.querySelectorAll('.tab-btn').forEach(b=>b.classList.toggle('active', b.dataset.view===name));
+  document.getElementById('backHomeBtn').classList.toggle('show', name!=='accueil');
   document.getElementById('mobileTabs').classList.remove('open');
   document.getElementById('menuBtn').setAttribute('aria-expanded','false');
   if(name==='catalogue') renderCatalogue();

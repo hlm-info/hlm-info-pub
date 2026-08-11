@@ -393,6 +393,11 @@
     font-size:14.5px;font-weight:600;color:var(--ink-soft);border-radius:var(--radius);
   }
   .mobile-tabs button.active{background:var(--bg-soft);color:var(--ink);}
+  .mobile-devise-btn{
+    display:flex;width:100%;justify-content:center;align-items:center;gap:6px;
+    margin-top:8px;padding:16px 14px 4px;border:none;border-top:1px dashed var(--line);border-radius:0;
+    background:transparent;font-family:'IBM Plex Mono',monospace;font-size:12.5px;color:var(--ink);font-weight:600;
+  }
   @media(max-width:640px){
     .head-actions .cta-btn{display:none;}
     .head-actions .devise-btn{display:none;}
@@ -435,6 +440,7 @@
     <button class="tab-btn mobile-tab-btn active" data-view="accueil" data-i18n="nav_accueil">Accueil</button>
     <button class="tab-btn mobile-tab-btn" data-view="catalogue" data-i18n="nav_catalogue">Catalogue</button>
     <button class="tab-btn mobile-tab-btn" data-view="location" data-i18n="nav_location">Location</button>
+    <button type="button" class="mobile-devise-btn" id="deviseBtnMobile">1 200 000 FCFA <span id="deviseAltMobile">≈ 1 829 €</span></button>
   </nav>
 </header>
 
@@ -1038,12 +1044,22 @@ let devise = "EUR";
 function fmt(n){ return Number(n).toLocaleString('fr-FR'); }
 function convert(fcfa){ return fmt(Math.round(fcfa*rates[devise].rate)); }
 function waLink(message){ return `https://wa.me/2290195994699?text=${encodeURIComponent(message)}`; }
-document.getElementById('deviseBtn').addEventListener('click', ()=>{
+function updateDeviseDisplay(){
+  const alt = devise==="FCFA" ? "" : `≈ ${convert(1200000)} ${rates[devise].label}`;
+  document.getElementById('deviseAlt').textContent = alt;
+  const altMobile = document.getElementById('deviseAltMobile');
+  if(altMobile) altMobile.textContent = alt;
+}
+function cycleDevise(){
   devise = devise==="EUR" ? "USD" : (devise==="USD" ? "FCFA" : "EUR");
-  document.getElementById('deviseAlt').textContent = devise==="FCFA" ? "" : `≈ ${convert(1200000)} ${rates[devise].label}`;
+  updateDeviseDisplay();
   renderCatalogue();
-});
-document.getElementById('deviseAlt').textContent = `≈ ${convert(1200000)} ${rates['EUR'].label}`;
+  renderCatalogueLocation();
+}
+document.getElementById('deviseBtn').addEventListener('click', cycleDevise);
+const deviseBtnMobile = document.getElementById('deviseBtnMobile');
+if(deviseBtnMobile) deviseBtnMobile.addEventListener('click', cycleDevise);
+updateDeviseDisplay();
 
 /* ---------------- NAVIGATION ---------------- */
 document.querySelectorAll('[data-view]').forEach(btn=>{

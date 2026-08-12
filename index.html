@@ -345,6 +345,8 @@
   .obs-block{margin-top:18px;padding:14px 16px;background:var(--bg-soft);border-radius:var(--radius);}
   .obs-block b{display:block;font-size:12.5px;text-transform:uppercase;letter-spacing:0.04em;color:var(--ink-soft);margin-bottom:6px;}
   .obs-block p{font-size:13.5px;color:var(--ink);line-height:1.5;white-space:pre-wrap;}
+  .msg-text{display:block;max-width:260px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:12.5px;color:var(--ink-soft);}
+  .msg-statut-select{font-size:12px;}
   .icon-btn:hover{color:var(--danger);background:#F3E2DD;}
 
   .add-form{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:18px;}
@@ -354,6 +356,20 @@
     width:100%;border:1px solid var(--line);border-radius:var(--radius);padding:9px 10px;font-size:13px;background:#fff;
   }
   .add-form button{width:100%;margin-top:18px;justify-content:center;}
+
+  .contact-form-wrap{max-width:640px;margin:40px auto 0;background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:28px 30px;}
+  .contact-form-wrap h3{font-family:'Fraunces',serif;font-size:19px;margin-bottom:4px;}
+  .cf-sub{font-size:13px;color:var(--ink-soft);margin-bottom:18px;}
+  .contact-form label{display:block;font-size:11px;color:var(--ink-soft);margin-bottom:5px;margin-top:14px;text-transform:uppercase;letter-spacing:0.04em;}
+  .contact-form input,.contact-form textarea{
+    width:100%;border:1px solid var(--line);border-radius:var(--radius);padding:10px 12px;font-size:13.5px;background:#fff;font-family:inherit;resize:vertical;
+  }
+  .cf-row{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+  .contact-form button{width:100%;margin-top:20px;justify-content:center;}
+  .cf-status{margin-top:12px;font-size:13px;text-align:center;min-height:18px;}
+  .cf-status.ok{color:#3C7A5C;}
+  .cf-status.err{color:#B14A2C;}
+  @media(max-width:640px){ .cf-row{grid-template-columns:1fr;} }
 
   footer{background:var(--ink);color:#C9C4B6;padding:50px 0 26px;}
   .foot-grid{display:grid;grid-template-columns:2fr 1fr 1fr;gap:40px;margin-bottom:36px;}
@@ -581,6 +597,27 @@
           <p><a href="mailto:hlm.info.pub@proton.me" style="color:var(--ink);font-weight:600;">hlm.info.pub@proton.me</a></p>
         </div>
       </div>
+
+      <div class="contact-form-wrap">
+        <h3 data-i18n="cf_h3">Ou laissez-nous un message</h3>
+        <p class="cf-sub" data-i18n="cf_sub">Nous vous répondons généralement sous 24h.</p>
+        <form id="contactForm" class="contact-form">
+          <div class="cf-row">
+            <div>
+              <label data-i18n="cf_nom">Nom complet</label>
+              <input type="text" id="cfNom" required placeholder="ex. Adjovi Koffi">
+            </div>
+            <div>
+              <label data-i18n="cf_contact">Email ou téléphone (WhatsApp)</label>
+              <input type="text" id="cfContact" required placeholder="ex. adjovi@email.com ou +33 6 12 34 56 78">
+            </div>
+          </div>
+          <label data-i18n="cf_message">Votre message</label>
+          <textarea id="cfMessage" rows="4" required placeholder="Décrivez votre besoin (achat, location, question sur un dossier en cours...)"></textarea>
+          <button type="submit" class="cta-btn" id="cfSubmitBtn"><span data-i18n="cf_btn">Envoyer le message</span></button>
+          <p class="cf-status" id="cfStatus"></p>
+        </form>
+      </div>
     </div>
   </section>
 </div>
@@ -687,6 +724,7 @@
       <div class="gestion-subtabs">
         <button class="gestion-subtab-btn active" data-sub="parcelles" data-i18n="ges_tab_parcelles">Parcelles</button>
         <button class="gestion-subtab-btn" data-sub="locations" data-i18n="ges_tab_locations">Location meublée</button>
+        <button class="gestion-subtab-btn" data-sub="messages" data-i18n="ges_tab_messages">Messages</button>
       </div>
 
       <div class="gestion-sub active" id="gestionSubParcelles">
@@ -781,6 +819,19 @@
           <button class="cta-btn" id="addLocationBtn"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M12 5v14M5 12h14"/></svg> <span data-i18n="addloc_btn">Ajouter le logement</span></button>
         </div>
       </div>
+      </div>
+
+      <div class="gestion-sub" id="gestionSubMessages">
+        <div class="stats-row">
+          <div class="stat-box"><div class="n" id="statMsgTotal">0</div><div class="l" data-i18n="statmsg_total">Messages reçus</div></div>
+          <div class="stat-box"><div class="n" id="statMsgNouveau">0</div><div class="l" data-i18n="statmsg_nouveau">Non traités</div></div>
+        </div>
+        <table class="g-table" style="width:100%;">
+          <thead>
+            <tr><th data-i18n="msg_th_date">Date</th><th data-i18n="msg_th_nom">Nom</th><th data-i18n="msg_th_contact">Contact</th><th data-i18n="msg_th_message">Message</th><th data-i18n="msg_th_statut">Statut</th><th></th></tr>
+          </thead>
+          <tbody id="gestionMsgTbody"></tbody>
+        </table>
       </div>
 
       </div>
@@ -924,7 +975,14 @@ const i18n = {
     msg_visite_location:(l)=> `Bonjour, je souhaite demander une visite vidéo pour le logement Réf. ${l.id} à ${l.ville}.`,
     add_observations:"Observations (optionnel)", th_observations:"Observations",
     obs_empty:"—", obs_edit:"Modifier les observations", obs_prompt:"Observations sur cette parcelle :",
-    obs_label:"Observations", back_home:"Accueil"
+    obs_label:"Observations", back_home:"Accueil",
+    cf_h3:"Ou laissez-nous un message", cf_sub:"Nous vous répondons généralement sous 24h.",
+    cf_nom:"Nom complet", cf_contact:"Email ou téléphone (WhatsApp)", cf_message:"Votre message",
+    cf_btn:"Envoyer le message", cf_ok:"Message envoyé ! Nous vous répondons sous peu.",
+    cf_err:"Une erreur est survenue, réessayez ou contactez-nous directement.",
+    ges_tab_messages:"Messages", statmsg_total:"Messages reçus", statmsg_nouveau:"Non traités",
+    msg_th_date:"Date", msg_th_nom:"Nom", msg_th_contact:"Contact", msg_th_message:"Message", msg_th_statut:"Statut",
+    msg_st_nouveau:"Nouveau", msg_st_traite:"Traité", msg_aucun:"Aucun message reçu pour le moment."
   },
   en: {
     nav_accueil:"Home", nav_catalogue:"Listings", nav_gestion:"Management", nav_cta_voir:"View listings",
@@ -1006,7 +1064,14 @@ const i18n = {
     msg_visite_location:(l)=> `Hello, I'd like to request a video visit for the home Ref. ${l.id} in ${l.ville}.`,
     add_observations:"Observations (optional)", th_observations:"Observations",
     obs_empty:"—", obs_edit:"Edit observations", obs_prompt:"Observations for this plot:",
-    obs_label:"Observations", back_home:"Home"
+    obs_label:"Observations", back_home:"Home",
+    cf_h3:"Or leave us a message", cf_sub:"We usually reply within 24h.",
+    cf_nom:"Full name", cf_contact:"Email or phone (WhatsApp)", cf_message:"Your message",
+    cf_btn:"Send message", cf_ok:"Message sent! We'll get back to you shortly.",
+    cf_err:"Something went wrong, please try again or contact us directly.",
+    ges_tab_messages:"Messages", statmsg_total:"Messages received", statmsg_nouveau:"Unread",
+    msg_th_date:"Date", msg_th_nom:"Name", msg_th_contact:"Contact", msg_th_message:"Message", msg_th_statut:"Status",
+    msg_st_nouveau:"New", msg_st_traite:"Handled", msg_aucun:"No messages received yet."
   }
 };
 let lang = localStorage.getItem('hlm_lang') || 'fr';
@@ -1032,6 +1097,7 @@ function applyLang(){
   populateVilleFilterLoc();
   renderCatalogueLocation();
   renderGestionLocations();
+  renderGestionMessages();
 }
 document.getElementById('langBtn').addEventListener('click', ()=>{
   lang = lang==='fr' ? 'en' : 'fr';
@@ -1102,6 +1168,7 @@ async function checkAuthAndRenderGestion(){
     document.getElementById('gestionContent').style.display = 'block';
     renderGestion();
     renderGestionLocations();
+    loadMessages();
   } else {
     document.getElementById('loginBox').style.display = 'block';
     document.getElementById('gestionContent').style.display = 'none';
@@ -1112,6 +1179,7 @@ document.querySelectorAll('.gestion-subtab-btn').forEach(btn=>{
     document.querySelectorAll('.gestion-subtab-btn').forEach(b=>b.classList.toggle('active', b===btn));
     document.getElementById('gestionSubParcelles').classList.toggle('active', btn.dataset.sub==='parcelles');
     document.getElementById('gestionSubLocations').classList.toggle('active', btn.dataset.sub==='locations');
+    document.getElementById('gestionSubMessages').classList.toggle('active', btn.dataset.sub==='messages');
   });
 });
 document.getElementById('loginBtn').addEventListener('click', async ()=>{
@@ -1153,6 +1221,90 @@ async function loadLocations(){
   renderCatalogueLocation();
   renderGestionLocations();
 }
+
+let messagesContact = [];
+async function loadMessages(){
+  if(!supabaseClient) return;
+  const {data, error} = await supabaseClient.from('messages_contact').select('*').order('created_at',{ascending:false});
+  if(error){ console.error(error); return; }
+  messagesContact = data || [];
+  renderGestionMessages();
+}
+function renderGestionMessages(){
+  const totalEl = document.getElementById('statMsgTotal');
+  const nouveauEl = document.getElementById('statMsgNouveau');
+  if(!totalEl) return;
+  totalEl.textContent = messagesContact.length;
+  nouveauEl.textContent = messagesContact.filter(m=>m.statut==='nouveau').length;
+
+  const tbody = document.getElementById('gestionMsgTbody');
+  tbody.innerHTML = messagesContact.map(m=>`
+    <tr data-id="${m.id}">
+      <td class="mono" style="font-size:12px;">${new Date(m.created_at).toLocaleDateString('fr-FR')}</td>
+      <td>${m.nom}</td>
+      <td class="mono" style="font-size:12px;">${m.contact}</td>
+      <td><span class="msg-text" title="${m.message.replace(/"/g,'&quot;')}">${m.message}</span></td>
+      <td>
+        <select class="msg-statut-select" data-id="${m.id}">
+          <option value="nouveau" ${m.statut==='nouveau'?'selected':''}>${i18n[lang].msg_st_nouveau}</option>
+          <option value="traite" ${m.statut==='traite'?'selected':''}>${i18n[lang].msg_st_traite}</option>
+        </select>
+      </td>
+      <td><button class="icon-btn msg-del-btn" data-id="${m.id}" title="Supprimer"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 7h16M9 7V5a1 1 0 011-1h4a1 1 0 011 1v2m2 0l-1 13a1 1 0 01-1 1H8a1 1 0 01-1-1L6 7h12z"/></svg></button></td>
+    </tr>
+  `).join('') || `<tr><td colspan="6" style="color:var(--ink-soft);font-size:13px;">${i18n[lang].msg_aucun}</td></tr>`;
+
+  tbody.querySelectorAll('.msg-statut-select').forEach(sel=>{
+    sel.addEventListener('change', async ()=>{
+      sel.disabled = true;
+      const {error} = await supabaseClient.from('messages_contact').update({statut: sel.value}).eq('id', sel.dataset.id);
+      if(error){ alert("Erreur : "+error.message); sel.disabled=false; return; }
+      await loadMessages();
+    });
+  });
+  tbody.querySelectorAll('.msg-del-btn').forEach(btn=>{
+    btn.addEventListener('click', async ()=>{
+      if(!confirm("Supprimer ce message ?")) return;
+      const {error} = await supabaseClient.from('messages_contact').delete().eq('id', btn.dataset.id);
+      if(error){ alert("Erreur : "+error.message); return; }
+      await loadMessages();
+    });
+  });
+}
+
+document.getElementById('contactForm').addEventListener('submit', async (e)=>{
+  e.preventDefault();
+  const statusEl = document.getElementById('cfStatus');
+  const btn = document.getElementById('cfSubmitBtn');
+  const t = i18n[lang];
+  if(!supabaseClient){
+    statusEl.textContent = t.cf_err;
+    statusEl.className = 'cf-status err';
+    return;
+  }
+  const nom = document.getElementById('cfNom').value.trim();
+  const contact = document.getElementById('cfContact').value.trim();
+  const message = document.getElementById('cfMessage').value.trim();
+  if(!nom || !contact || !message) return;
+
+  btn.disabled = true;
+  statusEl.textContent = '';
+  statusEl.className = 'cf-status';
+
+  const {error} = await supabaseClient.from('messages_contact').insert({
+    nom, contact, message, statut: 'nouveau'
+  });
+
+  btn.disabled = false;
+  if(error){
+    statusEl.textContent = t.cf_err;
+    statusEl.className = 'cf-status err';
+    return;
+  }
+  statusEl.textContent = t.cf_ok;
+  statusEl.className = 'cf-status ok';
+  document.getElementById('contactForm').reset();
+});
 
 /* ---------------- CATALOGUE ---------------- */
 function populateVilleFilter(){

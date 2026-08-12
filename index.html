@@ -300,7 +300,8 @@
     border-radius:var(--radius);border:1px solid var(--line);
   }
   .modal-head{
-    height:180px;position:relative;padding:22px;display:flex;flex-direction:column;justify-content:flex-end;
+    height:300px;position:relative;padding:22px;display:flex;flex-direction:column;justify-content:flex-end;
+    background-color:#1C1A15;
   }
   .modal-close{
     position:absolute;top:16px;right:16px;width:32px;height:32px;border-radius:50%;
@@ -1506,7 +1507,7 @@ function openModal(id){
   const mainUrl = urls[0] || null;
 
   document.getElementById('modalContent').innerHTML = `
-    <div class="modal-head" id="parcelModalHead" style="background:${mainUrl ? `center/cover no-repeat url('${mainUrl}')` : gradFor(p.id)}">
+    <div class="modal-head" id="parcelModalHead" style="background:${mainUrl ? `#1C1A15 center/contain no-repeat url('${mainUrl}')` : gradFor(p.id)}">
       <button class="modal-close" id="closeModalBtn">✕</button>
       <span class="badge-verified" style="background:rgba(255,255,255,0.9);">${t.modal_steps_done(steps.filter(Boolean).length)}</span>
     </div>
@@ -1537,7 +1538,7 @@ function openModal(id){
   document.getElementById('visiteBtn').addEventListener('click', ()=> window.open(waLink(t.msg_visite_parcelle(p)), '_blank'));
   document.querySelectorAll('.gallery-thumb').forEach(thumb=>{
     thumb.addEventListener('click', ()=>{
-      document.getElementById('parcelModalHead').style.background = `center/cover no-repeat url('${thumb.dataset.url}')`;
+      document.getElementById('parcelModalHead').style.background = `#1C1A15 center/contain no-repeat url('${thumb.dataset.url}')`;
       document.querySelectorAll('.gallery-thumb').forEach(th=>th.classList.toggle('active', th===thumb));
     });
   });
@@ -1602,7 +1603,7 @@ function openLocationModal(id){
   const mainUrl = urls[0] || null;
 
   document.getElementById('modalContent').innerHTML = `
-    <div class="modal-head" id="locModalHead" style="background:${mainUrl ? `center/cover no-repeat url('${mainUrl}')` : gradFor(l.id)}">
+    <div class="modal-head" id="locModalHead" style="background:${mainUrl ? `#1C1A15 center/contain no-repeat url('${mainUrl}')` : gradFor(l.id)}">
       <button class="modal-close" id="closeModalBtn">✕</button>
       <span class="badge-verified" style="background:rgba(255,255,255,0.9);">${typeLabel(l.type)}</span>
     </div>
@@ -1631,7 +1632,7 @@ function openLocationModal(id){
   document.getElementById('visiteLocBtn').addEventListener('click', ()=> window.open(waLink(t.msg_visite_location(l)), '_blank'));
   document.querySelectorAll('.gallery-thumb').forEach(thumb=>{
     thumb.addEventListener('click', ()=>{
-      document.getElementById('locModalHead').style.background = `center/cover no-repeat url('${thumb.dataset.url}')`;
+      document.getElementById('locModalHead').style.background = `#1C1A15 center/contain no-repeat url('${thumb.dataset.url}')`;
       document.querySelectorAll('.gallery-thumb').forEach(th=>th.classList.toggle('active', th===thumb));
     });
   });

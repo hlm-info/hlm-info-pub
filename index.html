@@ -1596,13 +1596,13 @@ function openModal(id){
         <h2>Réf. ${p.id}</h2>
         <div class="loc">${p.ville} · ${p.surface} m² · GPS ${p.gps||'—'}</div>
         <p class="desc">${p.description||''}</p>
+        ${p.video_url ? `<div class="video-block"><b>${t.video_label}</b><video src="${p.video_url}" controls></video></div>` : ''}
         <div class="meta-grid">
           <div class="meta-item"><span>${t.th_surface}</span><b>${p.surface} m²</b></div>
           <div class="meta-item"><span>${t.th_statut}</span><b>${statusLabel(p.statut)}</b></div>
         </div>
         <div class="chain-list">${stepsHtml}</div>
         ${p.observations ? `<div class="obs-block"><b>${t.obs_label}</b><p>${p.observations}</p></div>` : ''}
-        ${p.video_url ? `<div class="video-block"><b>${t.video_label}</b><video src="${p.video_url}" controls></video></div>` : ''}
       </div>
       <div class="side-box">
         <div class="price-big mono">${fmt(p.prix)} FCFA</div>

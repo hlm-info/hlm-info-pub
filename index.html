@@ -398,6 +398,15 @@
   .cf-status.err{color:#B14A2C;}
   @media(max-width:640px){ .cf-row{grid-template-columns:1fr;} }
 
+  .slot-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(72px,1fr));gap:7px;margin-top:6px;}
+  .slot-btn{
+    padding:9px 4px;border:1px solid var(--line);border-radius:var(--radius);background:#fff;
+    font-size:12.5px;font-family:'IBM Plex Mono',monospace;color:var(--ink);cursor:pointer;
+  }
+  .slot-btn.taken{opacity:0.35;text-decoration:line-through;cursor:not-allowed;background:var(--bg-soft);}
+  .slot-btn.selected{background:var(--ink);color:#fff;border-color:var(--ink);}
+  .slot-grid .obs-empty{grid-column:1/-1;}
+
   footer{background:var(--ink);color:#C9C4B6;padding:50px 0 26px;}
   .foot-grid{display:grid;grid-template-columns:2fr 1fr 1fr;gap:40px;margin-bottom:36px;}
   footer h4{color:#fff;font-size:12px;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:14px;font-family:'Work Sans',sans-serif;}
@@ -630,6 +639,41 @@
         </div>
       </div>
 
+      <div class="contact-form-wrap" id="bookingWrap">
+        <h3 data-i18n="bk_h3">Prendre rendez-vous</h3>
+        <p class="cf-sub" data-i18n="bk_sub">Choisissez un jour et un créneau, nous confirmons votre rendez-vous sous 24h.</p>
+        <form id="bookingForm" class="contact-form">
+          <div class="cf-row">
+            <div>
+              <label data-i18n="cf_nom">Nom complet</label>
+              <input type="text" id="bkNom" required placeholder="ex. Adjovi Koffi">
+            </div>
+            <div>
+              <label data-i18n="cf_contact">Email ou téléphone (WhatsApp)</label>
+              <input type="text" id="bkContact" required placeholder="ex. adjovi@email.com ou +33 6 12 34 56 78">
+            </div>
+          </div>
+          <label data-i18n="bk_motif">Motif du rendez-vous</label>
+          <select id="bkMotif">
+            <option value="parcelle" data-i18n="bk_motif_parcelle">Achat d'une parcelle</option>
+            <option value="location" data-i18n="bk_motif_location">Location meublée</option>
+            <option value="autre" data-i18n="bk_motif_autre">Autre demande</option>
+          </select>
+          <div class="cf-row">
+            <div>
+              <label data-i18n="bk_date">Date souhaitée</label>
+              <input type="date" id="bkDate">
+            </div>
+            <div>
+              <label data-i18n="bk_slot">Créneau horaire</label>
+              <div class="slot-grid" id="bkSlots"><p class="obs-empty" id="bkSlotsHint" data-i18n="bk_pick_date">Choisissez d'abord une date.</p></div>
+            </div>
+          </div>
+          <button type="submit" class="cta-btn" id="bkSubmitBtn"><span data-i18n="bk_btn">Confirmer la demande</span></button>
+          <p class="cf-status" id="bkStatus"></p>
+        </form>
+      </div>
+
       <div class="contact-form-wrap">
         <h3 data-i18n="cf_h3">Ou laissez-nous un message</h3>
         <p class="cf-sub" data-i18n="cf_sub">Nous vous répondons généralement sous 24h.</p>
@@ -757,6 +801,7 @@
         <button class="gestion-subtab-btn active" data-sub="parcelles" data-i18n="ges_tab_parcelles">Parcelles</button>
         <button class="gestion-subtab-btn" data-sub="locations" data-i18n="ges_tab_locations">Location meublée</button>
         <button class="gestion-subtab-btn" data-sub="messages" data-i18n="ges_tab_messages">Messages</button>
+        <button class="gestion-subtab-btn" data-sub="rdv" data-i18n="ges_tab_rdv">Rendez-vous</button>
       </div>
 
       <div class="gestion-sub active" id="gestionSubParcelles">
@@ -865,6 +910,20 @@
             <tr><th data-i18n="msg_th_date">Date</th><th data-i18n="msg_th_nom">Nom</th><th data-i18n="msg_th_contact">Contact</th><th data-i18n="msg_th_message">Message</th><th data-i18n="msg_th_statut">Statut</th><th></th></tr>
           </thead>
           <tbody id="gestionMsgTbody"></tbody>
+        </table>
+      </div>
+
+      <div class="gestion-sub" id="gestionSubRdv">
+        <div class="stats-row">
+          <div class="stat-box"><div class="n" id="statRdvTotal">0</div><div class="l" data-i18n="statrdv_total">Demandes reçues</div></div>
+          <div class="stat-box"><div class="n" id="statRdvNouveau">0</div><div class="l" data-i18n="statrdv_nouveau">À confirmer</div></div>
+          <div class="stat-box"><div class="n" id="statRdvConfirme">0</div><div class="l" data-i18n="statrdv_confirme">Confirmés</div></div>
+        </div>
+        <table class="g-table" style="width:100%;">
+          <thead>
+            <tr><th data-i18n="rdv_th_date">Date</th><th data-i18n="rdv_th_heure">Heure</th><th data-i18n="msg_th_nom">Nom</th><th data-i18n="msg_th_contact">Contact</th><th data-i18n="rdv_th_motif">Motif</th><th data-i18n="msg_th_statut">Statut</th><th></th></tr>
+          </thead>
+          <tbody id="gestionRdvTbody"></tbody>
         </table>
       </div>
 
@@ -1017,6 +1076,16 @@ const i18n = {
     ges_tab_messages:"Messages", statmsg_total:"Messages reçus", statmsg_nouveau:"Non traités",
     msg_th_date:"Date", msg_th_nom:"Nom", msg_th_contact:"Contact", msg_th_message:"Message", msg_th_statut:"Statut",
     msg_st_nouveau:"Nouveau", msg_st_traite:"Traité", msg_aucun:"Aucun message reçu pour le moment.",
+    bk_h3:"Prendre rendez-vous", bk_sub:"Choisissez un jour et un créneau, nous confirmons votre rendez-vous sous 24h.",
+    bk_motif:"Motif du rendez-vous", bk_motif_parcelle:"Achat d'une parcelle", bk_motif_location:"Location meublée", bk_motif_autre:"Autre demande",
+    bk_date:"Date souhaitée", bk_slot:"Créneau horaire", bk_btn:"Confirmer la demande",
+    bk_pick_date:"Choisissez d'abord une date.", bk_weekday_only:"Merci de choisir un jour ouvré (lundi–vendredi).",
+    bk_loading:"Chargement des créneaux...", bk_missing:"Merci de remplir tous les champs et choisir un créneau.",
+    bk_ok:"Demande envoyée ! Nous confirmons votre rendez-vous sous 24h.",
+    ges_tab_rdv:"Rendez-vous", statrdv_total:"Demandes reçues", statrdv_nouveau:"À confirmer", statrdv_confirme:"Confirmés",
+    rdv_th_date:"Date", rdv_th_heure:"Heure", rdv_th_motif:"Motif",
+    rdv_st_nouveau:"Nouveau", rdv_st_confirme:"Confirmé", rdv_st_annule:"Annulé",
+    rdv_aucun:"Aucune demande de rendez-vous pour le moment.",
     add_photos:"Photos (plusieurs possibles)", manage_photos:"Gérer les photos",
     manage_photos_sub:"Ajoutez ou retirez des photos pour ce logement.",
     add_photos_btn:"Ajouter des photos", close_btn:"Fermer", remove_photo:"Retirer cette photo",
@@ -1115,6 +1184,16 @@ const i18n = {
     ges_tab_messages:"Messages", statmsg_total:"Messages received", statmsg_nouveau:"Unread",
     msg_th_date:"Date", msg_th_nom:"Name", msg_th_contact:"Contact", msg_th_message:"Message", msg_th_statut:"Status",
     msg_st_nouveau:"New", msg_st_traite:"Handled", msg_aucun:"No messages received yet.",
+    bk_h3:"Book an appointment", bk_sub:"Choose a day and a time slot, we'll confirm your appointment within 24h.",
+    bk_motif:"Reason for the appointment", bk_motif_parcelle:"Buying a plot", bk_motif_location:"Furnished rental", bk_motif_autre:"Other request",
+    bk_date:"Preferred date", bk_slot:"Time slot", bk_btn:"Confirm request",
+    bk_pick_date:"Pick a date first.", bk_weekday_only:"Please choose a weekday (Monday–Friday).",
+    bk_loading:"Loading time slots...", bk_missing:"Please fill in all fields and choose a time slot.",
+    bk_ok:"Request sent! We'll confirm your appointment within 24h.",
+    ges_tab_rdv:"Appointments", statrdv_total:"Requests received", statrdv_nouveau:"To confirm", statrdv_confirme:"Confirmed",
+    rdv_th_date:"Date", rdv_th_heure:"Time", rdv_th_motif:"Reason",
+    rdv_st_nouveau:"New", rdv_st_confirme:"Confirmed", rdv_st_annule:"Cancelled",
+    rdv_aucun:"No appointment requests yet.",
     add_photos:"Photos (multiple allowed)", manage_photos:"Manage photos",
     manage_photos_sub:"Add or remove photos for this home.",
     add_photos_btn:"Add photos", close_btn:"Close", remove_photo:"Remove this photo",
@@ -1150,6 +1229,7 @@ function applyLang(){
   renderCatalogueLocation();
   renderGestionLocations();
   renderGestionMessages();
+  renderGestionRdv();
 }
 document.getElementById('langBtn').addEventListener('click', ()=>{
   lang = lang==='fr' ? 'en' : 'fr';
@@ -1221,6 +1301,7 @@ async function checkAuthAndRenderGestion(){
     renderGestion();
     renderGestionLocations();
     loadMessages();
+    loadRdv();
   } else {
     document.getElementById('loginBox').style.display = 'block';
     document.getElementById('gestionContent').style.display = 'none';
@@ -1232,6 +1313,7 @@ document.querySelectorAll('.gestion-subtab-btn').forEach(btn=>{
     document.getElementById('gestionSubParcelles').classList.toggle('active', btn.dataset.sub==='parcelles');
     document.getElementById('gestionSubLocations').classList.toggle('active', btn.dataset.sub==='locations');
     document.getElementById('gestionSubMessages').classList.toggle('active', btn.dataset.sub==='messages');
+    document.getElementById('gestionSubRdv').classList.toggle('active', btn.dataset.sub==='rdv');
   });
 });
 document.getElementById('loginBtn').addEventListener('click', async ()=>{
@@ -1465,6 +1547,145 @@ function renderGestionMessages(){
     });
   });
 }
+
+let rendezVous = [];
+async function loadRdv(){
+  if(!supabaseClient) return;
+  const {data, error} = await supabaseClient.from('rendez_vous').select('*').order('date_rdv',{ascending:true}).order('heure_rdv',{ascending:true});
+  if(error){ console.error(error); return; }
+  rendezVous = data || [];
+  renderGestionRdv();
+}
+function motifLabel(m){
+  const t = i18n[lang];
+  return m==='parcelle' ? t.bk_motif_parcelle : m==='location' ? t.bk_motif_location : t.bk_motif_autre;
+}
+function renderGestionRdv(){
+  const totalEl = document.getElementById('statRdvTotal');
+  if(!totalEl) return;
+  totalEl.textContent = rendezVous.length;
+  document.getElementById('statRdvNouveau').textContent = rendezVous.filter(r=>r.statut==='nouveau').length;
+  document.getElementById('statRdvConfirme').textContent = rendezVous.filter(r=>r.statut==='confirme').length;
+
+  const tbody = document.getElementById('gestionRdvTbody');
+  const t = i18n[lang];
+  tbody.innerHTML = rendezVous.map(r=>`
+    <tr data-id="${r.id}">
+      <td class="mono" style="font-size:12px;">${r.date_rdv}</td>
+      <td class="mono" style="font-size:12px;">${r.heure_rdv}</td>
+      <td>${r.nom}</td>
+      <td class="mono" style="font-size:12px;">${r.contact}</td>
+      <td style="font-size:12.5px;">${motifLabel(r.motif)}</td>
+      <td>
+        <select class="rdv-statut-select" data-id="${r.id}">
+          <option value="nouveau" ${r.statut==='nouveau'?'selected':''}>${t.rdv_st_nouveau}</option>
+          <option value="confirme" ${r.statut==='confirme'?'selected':''}>${t.rdv_st_confirme}</option>
+          <option value="annule" ${r.statut==='annule'?'selected':''}>${t.rdv_st_annule}</option>
+        </select>
+      </td>
+      <td><button class="icon-btn rdv-del-btn" data-id="${r.id}" title="Supprimer"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 7h16M9 7V5a1 1 0 011-1h4a1 1 0 011 1v2m2 0l-1 13a1 1 0 01-1 1H8a1 1 0 01-1-1L6 7h12z"/></svg></button></td>
+    </tr>
+  `).join('') || `<tr><td colspan="7" style="color:var(--ink-soft);font-size:13px;">${t.rdv_aucun}</td></tr>`;
+
+  tbody.querySelectorAll('.rdv-statut-select').forEach(sel=>{
+    sel.addEventListener('change', async ()=>{
+      sel.disabled = true;
+      const {error} = await supabaseClient.from('rendez_vous').update({statut: sel.value}).eq('id', sel.dataset.id);
+      if(error){ alert("Erreur : "+error.message); sel.disabled=false; return; }
+      await loadRdv();
+    });
+  });
+  tbody.querySelectorAll('.rdv-del-btn').forEach(btn=>{
+    btn.addEventListener('click', async ()=>{
+      if(!confirm("Supprimer ce rendez-vous ?")) return;
+      const {error} = await supabaseClient.from('rendez_vous').delete().eq('id', btn.dataset.id);
+      if(error){ alert("Erreur : "+error.message); return; }
+      await loadRdv();
+    });
+  });
+}
+const RDV_SLOTS = ['09:00','10:00','11:00','12:00','14:00','15:00','16:00'];
+let bkSelectedSlot = null;
+
+function setupBookingDateRange(){
+  const input = document.getElementById('bkDate');
+  if(!input) return;
+  const fmt = d => d.toISOString().split('T')[0];
+  const min = new Date(); min.setDate(min.getDate()+1);
+  const max = new Date(); max.setDate(max.getDate()+30);
+  input.min = fmt(min);
+  input.max = fmt(max);
+}
+
+async function renderBookingSlots(){
+  const t = i18n[lang];
+  const dateVal = document.getElementById('bkDate').value;
+  const grid = document.getElementById('bkSlots');
+  bkSelectedSlot = null;
+  if(!dateVal){ grid.innerHTML = `<p class="obs-empty">${t.bk_pick_date}</p>`; return; }
+  const day = new Date(dateVal + 'T00:00:00').getDay();
+  if(day===0 || day===6){
+    grid.innerHTML = `<p class="obs-empty">${t.bk_weekday_only}</p>`;
+    return;
+  }
+  grid.innerHTML = `<p class="obs-empty">${t.bk_loading}</p>`;
+  let taken = [];
+  if(supabaseClient){
+    const {data} = await supabaseClient.from('rdv_creneaux_public').select('heure_rdv').eq('date_rdv', dateVal);
+    taken = (data||[]).map(r=>r.heure_rdv);
+  }
+  grid.innerHTML = RDV_SLOTS.map(s=>`<button type="button" class="slot-btn ${taken.includes(s)?'taken':''}" data-slot="${s}" ${taken.includes(s)?'disabled':''}>${s}</button>`).join('');
+  grid.querySelectorAll('.slot-btn:not(.taken)').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      grid.querySelectorAll('.slot-btn').forEach(b=>b.classList.remove('selected'));
+      btn.classList.add('selected');
+      bkSelectedSlot = btn.dataset.slot;
+    });
+  });
+}
+const bkDateInput = document.getElementById('bkDate');
+if(bkDateInput) bkDateInput.addEventListener('change', renderBookingSlots);
+
+document.getElementById('bookingForm').addEventListener('submit', async (e)=>{
+  e.preventDefault();
+  const statusEl = document.getElementById('bkStatus');
+  const btn = document.getElementById('bkSubmitBtn');
+  const t = i18n[lang];
+  if(!supabaseClient){
+    statusEl.textContent = t.cf_err;
+    statusEl.className = 'cf-status err';
+    return;
+  }
+  const nom = document.getElementById('bkNom').value.trim();
+  const contact = document.getElementById('bkContact').value.trim();
+  const motif = document.getElementById('bkMotif').value;
+  const date_rdv = document.getElementById('bkDate').value;
+  if(!nom || !contact || !date_rdv || !bkSelectedSlot){
+    statusEl.textContent = t.bk_missing;
+    statusEl.className = 'cf-status err';
+    return;
+  }
+
+  btn.disabled = true;
+  statusEl.textContent = '';
+  statusEl.className = 'cf-status';
+
+  const {error} = await supabaseClient.from('rendez_vous').insert({
+    nom, contact, motif, date_rdv, heure_rdv: bkSelectedSlot, statut: 'nouveau'
+  });
+
+  btn.disabled = false;
+  if(error){
+    statusEl.textContent = t.cf_err;
+    statusEl.className = 'cf-status err';
+    return;
+  }
+  statusEl.textContent = t.bk_ok;
+  statusEl.className = 'cf-status ok';
+  document.getElementById('bookingForm').reset();
+  bkSelectedSlot = null;
+  document.getElementById('bkSlots').innerHTML = `<p class="obs-empty">${t.bk_pick_date}</p>`;
+});
 
 document.getElementById('contactForm').addEventListener('submit', async (e)=>{
   e.preventDefault();
@@ -1966,6 +2187,7 @@ document.getElementById('addLocationBtn').addEventListener('click', async ()=>{
 applyLang();
 loadParcelles();
 loadLocations();
+setupBookingDateRange();
 </script>
 </body>
 </html>

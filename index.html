@@ -712,6 +712,12 @@
         <select id="fVille">
           <option value="" data-i18n="f_ville_all">Toutes les villes</option>
         </select>
+        <select id="fTypeBien">
+          <option value="" data-i18n="f_type_all">Tous types</option>
+          <option value="parcelle" data-i18n="type_parcelle">Parcelle</option>
+          <option value="maison" data-i18n="type_maison">Maison</option>
+          <option value="immeuble" data-i18n="type_immeuble">Immeuble entier</option>
+        </select>
         <select id="fStatut">
           <option value="" data-i18n="f_statut_all">Tous statuts</option>
           <option value="dispo" data-i18n="st_dispo">Disponible</option>
@@ -815,7 +821,7 @@
       <div class="gestion-layout">
         <table class="g-table">
           <thead>
-            <tr><th data-i18n="th_photo">Photo</th><th data-i18n="th_ref">Référence</th><th data-i18n="th_ville">Ville</th><th data-i18n="th_surface">Surface</th><th data-i18n="th_prix">Prix FCFA</th><th data-i18n="th_statut">Statut</th><th data-i18n="th_observations">Observations</th><th data-i18n="th_video">Vidéo</th><th></th></tr>
+            <tr><th data-i18n="th_photo">Photo</th><th data-i18n="th_ref">Référence</th><th data-i18n="th_ville">Ville</th><th data-i18n="th_type">Type</th><th data-i18n="th_surface">Surface</th><th data-i18n="th_prix">Prix FCFA</th><th data-i18n="th_statut">Statut</th><th data-i18n="th_observations">Observations</th><th data-i18n="th_video">Vidéo</th><th></th></tr>
           </thead>
           <tbody id="gestionTbody"></tbody>
         </table>
@@ -824,6 +830,12 @@
           <h3 data-i18n="add_h3">Ajouter une parcelle</h3>
           <label data-i18n="add_ville">Ville / quartier</label>
           <input type="text" id="newVille" placeholder="ex. Ouidah, Pahou">
+          <label data-i18n="add_type_bien">Type de bien</label>
+          <select id="newTypeBien">
+            <option value="parcelle" data-i18n="type_parcelle">Parcelle</option>
+            <option value="maison" data-i18n="type_maison">Maison</option>
+            <option value="immeuble" data-i18n="type_immeuble">Immeuble entier</option>
+          </select>
           <label data-i18n="add_surface">Surface (m²)</label>
           <input type="number" id="newSurface" placeholder="ex. 500">
           <label data-i18n="add_prix">Prix (FCFA)</label>
@@ -1048,7 +1060,7 @@ const i18n = {
     nav_location:"Location",
     loc_eyebrow:"Location meublée", loc_h2:"Appartements et maisons entièrement meublés",
     loc_p:"Emménagez directement, sans rien acheter : logements prêts à vivre, gérés à distance pour la diaspora.",
-    f_type_all:"Tous types", type_appartement:"Appartement", type_maison:"Maison", type_immeuble:"Immeuble entier",
+    f_type_all:"Tous types", type_appartement:"Appartement", type_maison:"Maison", type_immeuble:"Immeuble entier", type_parcelle:"Parcelle", add_type_bien:"Type de bien",
     f_loyer_all:"Tous loyers", f_loyer_1:"Moins de 15k FCFA/jour", f_loyer_2:"15k – 40k FCFA/jour", f_loyer_3:"Plus de 40k FCFA/jour",
     st_loue:"Loué", par_jour:"jour",
     aucune_location:"Aucun logement ne correspond à ces critères.",
@@ -1156,7 +1168,7 @@ const i18n = {
     nav_location:"Rentals",
     loc_eyebrow:"Furnished rentals", loc_h2:"Fully furnished apartments and houses",
     loc_p:"Move in directly, nothing to buy: move-in ready homes, managed remotely for the diaspora.",
-    f_type_all:"All types", type_appartement:"Apartment", type_maison:"House", type_immeuble:"Whole building",
+    f_type_all:"All types", type_appartement:"Apartment", type_maison:"House", type_immeuble:"Whole building", type_parcelle:"Bare plot", add_type_bien:"Property type",
     f_loyer_all:"All rents", f_loyer_1:"Under 15k FCFA/day", f_loyer_2:"15k – 40k FCFA/day", f_loyer_3:"Over 40k FCFA/day",
     st_loue:"Rented", par_jour:"day",
     aucune_location:"No home matches these criteria.",
@@ -1743,6 +1755,7 @@ function populateVilleFilterLoc(){
 function locStatusLabel(s){ const t=i18n[lang]; return s==='dispo'?t.st_dispo: s==='reserve'?t.st_reserve:t.st_loue; }
 function locStatusClass(s){ return s==='dispo'?'st-dispo': s==='reserve'?'st-reserve':'st-vendu'; }
 function typeLabel(ty){ const t=i18n[lang]; return ty==='maison'?t.type_maison: ty==='immeuble'?t.type_immeuble:t.type_appartement; }
+function typeLabelParcelle(ty){ const t=i18n[lang]; return ty==='maison'?t.type_maison: ty==='immeuble'?t.type_immeuble:t.type_parcelle; }
 const equipFields = [
   ['wifi','equip_wifi'],['clim','equip_clim'],['cuisine','equip_cuisine'],
   ['generateur','equip_generateur'],['eau','equip_eau'],['parking','equip_parking'],['securite','equip_securite']
@@ -1754,10 +1767,12 @@ function equipListOf(l){
 
 function renderCatalogue(){
   const ville = document.getElementById('fVille').value;
+  const typeBien = document.getElementById('fTypeBien').value;
   const statut = document.getElementById('fStatut').value;
   const prixRange = document.getElementById('fPrix').value;
   let list = parcelles.filter(p=>{
     if(ville && !p.ville.startsWith(ville)) return false;
+    if(typeBien && (p.type || 'parcelle')!==typeBien) return false;
     if(statut && p.statut!==statut) return false;
     if(prixRange){
       const [min,max] = prixRange.split('-').map(Number);
@@ -1771,7 +1786,7 @@ function renderCatalogue(){
     <div class="p-card" data-id="${p.id}">
       <div class="p-thumb" style="background:${p.photo_url ? `center/cover no-repeat url('${p.photo_url}')` : gradFor(p.id)}">
         <span class="p-status ${statusClass(p.statut)}">${statusLabel(p.statut)}</span>
-        <span class="p-tag">${p.ville.split(',')[0]}</span>
+        <span class="p-tag">${p.type && p.type!=='parcelle' ? typeLabelParcelle(p.type)+' · ' : ''}${p.ville.split(',')[0]}</span>
         ${photoUrlsOf(p).length>1 ? `<span class="photo-count-badge">📷 ${photoUrlsOf(p).length}</span>` : ''}
         ${p.video_url ? `<span class="video-badge">🎥</span>` : ''}
       </div>
@@ -1793,7 +1808,7 @@ function renderCatalogue(){
     card.addEventListener('click', ()=> openModal(card.dataset.id));
   });
 }
-['fVille','fStatut','fPrix'].forEach(id=> document.getElementById(id).addEventListener('change', renderCatalogue));
+['fVille','fTypeBien','fStatut','fPrix'].forEach(id=> document.getElementById(id).addEventListener('change', renderCatalogue));
 
 /* ---------------- MODAL ---------------- */
 function openModal(id){
@@ -1819,11 +1834,12 @@ function openModal(id){
     ${urls.length>1 ? `<div class="modal-gallery-thumbs">${urls.map((u,i)=>`<button class="gallery-thumb ${i===0?'active':''}" data-url="${u}" style="background-image:url('${u}')"></button>`).join('')}</div>` : ''}
     <div class="modal-body">
       <div>
-        <h2>Réf. ${p.id}</h2>
+        <h2>Réf. ${p.id} — ${typeLabelParcelle(p.type)}</h2>
         <div class="loc">${p.ville} · ${p.surface} m² · GPS ${p.gps||'—'}</div>
         <p class="desc">${p.description||''}</p>
         ${p.video_url ? `<div class="video-block"><b>${t.video_label}</b><video src="${p.video_url}" controls></video></div>` : ''}
         <div class="meta-grid">
+          <div class="meta-item"><span>${t.th_type}</span><b>${typeLabelParcelle(p.type)}</b></div>
           <div class="meta-item"><span>${t.th_surface}</span><b>${p.surface} m²</b></div>
           <div class="meta-item"><span>${t.th_statut}</span><b>${statusLabel(p.statut)}</b></div>
         </div>
@@ -1965,6 +1981,13 @@ function renderGestion(){
       </td>
       <td class="mono">${p.id}</td>
       <td>${p.ville}</td>
+      <td>
+        <select class="type-bien-select" data-id="${p.id}">
+          <option value="parcelle" ${(!p.type || p.type==='parcelle')?'selected':''}>${i18n[lang].type_parcelle}</option>
+          <option value="maison" ${p.type==='maison'?'selected':''}>${i18n[lang].type_maison}</option>
+          <option value="immeuble" ${p.type==='immeuble'?'selected':''}>${i18n[lang].type_immeuble}</option>
+        </select>
+      </td>
       <td>${p.surface} m²</td>
       <td class="mono">${fmt(p.prix)}</td>
       <td>
@@ -2016,6 +2039,14 @@ function renderGestion(){
       await loadParcelles();
     });
   });
+  tbody.querySelectorAll('.type-bien-select').forEach(sel=>{
+    sel.addEventListener('change', async ()=>{
+      sel.disabled = true;
+      const {error} = await supabaseClient.from('parcelles').update({type: sel.value}).eq('id', sel.dataset.id);
+      if(error){ alert("Erreur : "+error.message); sel.disabled=false; return; }
+      await loadParcelles();
+    });
+  });
   tbody.querySelectorAll('.del-btn').forEach(btn=>{
     btn.addEventListener('click', async ()=>{
       if(!confirm(`Supprimer la parcelle ${btn.dataset.id} ?`)) return;
@@ -2039,6 +2070,7 @@ async function uploadPhoto(file, parcelleId, bucket='parcelles-photos'){
 document.getElementById('addParcelleBtn').addEventListener('click', async ()=>{
   if(!supabaseClient){ alert("Configure d'abord supabase-config.js (voir README.md)."); return; }
   const ville = document.getElementById('newVille').value.trim();
+  const type = document.getElementById('newTypeBien').value;
   const surface = Number(document.getElementById('newSurface').value);
   const prix = Number(document.getElementById('newPrix').value);
   const statut = document.getElementById('newStatut').value;
@@ -2058,7 +2090,7 @@ document.getElementById('addParcelleBtn').addEventListener('click', async ()=>{
   const photo_url = photo_urls[0] || null;
   const video_url = videoFile ? await uploadPhoto(videoFile, id + '-video-' + Date.now(), 'parcelles-videos') : null;
   const {error} = await supabaseClient.from('parcelles').insert({
-    id, ville, surface, prix, statut, gps:"—", photo_url, photo_urls, video_url,
+    id, ville, type, surface, prix, statut, gps:"—", photo_url, photo_urls, video_url,
     observations: observations || null,
     description:"Nouvelle parcelle ajoutée par l'équipe de gestion, en cours de documentation complète.",
     etape_titre:true, etape_bornage:false, etape_mandataire:false, etape_notarie:false

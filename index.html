@@ -382,6 +382,13 @@
   .add-form input,.add-form select{
     width:100%;border:1px solid var(--line);border-radius:var(--radius);padding:9px 10px;font-size:13px;background:#fff;
   }
+  .pw-field{position:relative;display:block;width:100%;margin:6px 0 14px;}
+  .pw-field input{width:100%;padding:8px 42px 8px 8px;box-sizing:border-box;border:1px solid var(--line);border-radius:var(--radius);font-size:14px;}
+  .pw-toggle-btn{
+    position:absolute;top:50%;right:6px;transform:translateY(-50%);
+    background:none;border:none;padding:6px;color:var(--ink-soft);display:flex;align-items:center;justify-content:center;
+  }
+  .pw-toggle-btn:hover{color:var(--ink);}
   .add-form button{width:100%;margin-top:18px;justify-content:center;}
 
   .contact-form-wrap{max-width:640px;margin:40px auto 0;background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:28px 30px;}
@@ -793,7 +800,12 @@
         <label data-i18n="login_email">Email</label>
         <input type="email" id="loginEmail" placeholder="ton@email.com" style="display:block;width:100%;margin:6px 0 14px;padding:8px;">
         <label data-i18n="login_pass">Mot de passe</label>
-        <input type="password" id="loginPassword" placeholder="••••••••" style="display:block;width:100%;margin:6px 0 14px;padding:8px;">
+        <div class="pw-field">
+          <input type="password" id="loginPassword" placeholder="••••••••">
+          <button type="button" class="pw-toggle-btn" id="loginPwToggle" title="Afficher/masquer le mot de passe">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7z"/><circle cx="12" cy="12" r="3"/></svg>
+          </button>
+        </div>
         <button class="cta-btn" id="loginBtn" data-i18n="login_btn">Se connecter</button>
         <p id="loginError" style="color:#D45; font-size:13px; margin-top:10px;"></p>
       </div>
@@ -1327,6 +1339,14 @@ document.querySelectorAll('.gestion-subtab-btn').forEach(btn=>{
     document.getElementById('gestionSubMessages').classList.toggle('active', btn.dataset.sub==='messages');
     document.getElementById('gestionSubRdv').classList.toggle('active', btn.dataset.sub==='rdv');
   });
+});
+document.getElementById('loginPwToggle').addEventListener('click', ()=>{
+  const input = document.getElementById('loginPassword');
+  const isHidden = input.type === 'password';
+  input.type = isHidden ? 'text' : 'password';
+  document.getElementById('loginPwToggle').innerHTML = isHidden
+    ? `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 3l18 18M10.6 10.6a2 2 0 002.8 2.8M9.3 5.3A10.7 10.7 0 0112 5c7 0 11 7 11 7a13.2 13.2 0 01-3.1 3.8M6.1 6.1C3.6 7.8 1 12 1 12s4 7 11 7a10.6 10.6 0 004.9-1.2"/></svg>`
+    : `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7z"/><circle cx="12" cy="12" r="3"/></svg>`;
 });
 document.getElementById('loginBtn').addEventListener('click', async ()=>{
   const email = document.getElementById('loginEmail').value.trim();

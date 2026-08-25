@@ -250,6 +250,14 @@
     padding:5px 10px;font-size:11.5px;color:var(--ink-soft);display:flex;align-items:center;gap:5px;
   }
   .checkbox-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:6px;}
+  .steps-manager-list{display:flex;flex-direction:column;gap:10px;}
+  .steps-manager-item{
+    display:flex;align-items:flex-start;gap:12px;padding:14px 16px;border:1px solid var(--line);
+    border-radius:var(--radius);cursor:pointer;background:var(--bg-soft);
+  }
+  .steps-manager-item input{width:auto;margin-top:3px;flex-shrink:0;}
+  .steps-manager-item b{font-size:14px;}
+  .steps-manager-sub{font-size:12px;color:var(--ink-soft);}
   .checkbox-item{display:flex;align-items:center;gap:6px;font-size:12.5px;color:var(--ink-soft);}
   .checkbox-item input{width:auto;}
   .gestion-subtabs{display:flex;gap:4px;background:var(--bg-soft);padding:4px;border-radius:var(--radius);margin-bottom:24px;width:fit-content;}
@@ -833,7 +841,7 @@
       <div class="gestion-layout">
         <table class="g-table">
           <thead>
-            <tr><th data-i18n="th_photo">Photo</th><th data-i18n="th_ref">Référence</th><th data-i18n="th_ville">Ville</th><th data-i18n="th_type">Type</th><th data-i18n="th_surface">Surface</th><th data-i18n="th_prix">Prix FCFA</th><th data-i18n="th_statut">Statut</th><th data-i18n="th_observations">Observations</th><th data-i18n="th_video">Vidéo</th><th></th></tr>
+            <tr><th data-i18n="th_photo">Photo</th><th data-i18n="th_ref">Référence</th><th data-i18n="th_ville">Ville</th><th data-i18n="th_type">Type</th><th data-i18n="th_surface">Surface</th><th data-i18n="th_prix">Prix FCFA</th><th data-i18n="th_statut">Statut</th><th data-i18n="th_observations">Observations</th><th data-i18n="th_video">Vidéo</th><th data-i18n="th_steps">Étapes</th><th></th></tr>
           </thead>
           <tbody id="gestionTbody"></tbody>
         </table>
@@ -1117,6 +1125,7 @@ const i18n = {
     no_photos_yet:"Aucune photo pour l'instant.", uploading:"Envoi en cours...",
     th_video:"Vidéo", add_video:"Vidéo courte (optionnel)",
     manage_video:"Gérer la vidéo", manage_video_sub:"Ajoutez, remplacez ou retirez la vidéo de cette parcelle.",
+    th_steps:"Étapes", manage_steps:"Étapes de vérification", manage_steps_sub:"Cochez chaque étape au fur et à mesure de son avancement réel.",
     remove_video:"Retirer la vidéo", no_video_yet:"Aucune vidéo pour l'instant.",
     replace_video:"Remplacer la vidéo", add_video_btn:"Ajouter une vidéo",
     remove_video_confirm:"Retirer la vidéo de cette parcelle ?", video_label:"Vidéo"
@@ -1226,6 +1235,7 @@ const i18n = {
     no_photos_yet:"No photos yet.", uploading:"Uploading...",
     th_video:"Video", add_video:"Short video (optional)",
     manage_video:"Manage video", manage_video_sub:"Add, replace, or remove this plot's video.",
+    th_steps:"Steps", manage_steps:"Verification steps", manage_steps_sub:"Check each step off as it's genuinely completed.",
     remove_video:"Remove video", no_video_yet:"No video yet.",
     replace_video:"Replace video", add_video_btn:"Add a video",
     remove_video_confirm:"Remove the video from this plot?", video_label:"Video"
@@ -1472,6 +1482,45 @@ function openVideoManager(id){
     });
 
     document.getElementById('videoManagerCloseBtn').addEventListener('click', closeModal);
+  }
+  render();
+  document.getElementById('modalOverlay').classList.add('active');
+}
+
+const STEP_FIELDS = ['etape_titre','etape_bornage','etape_mandataire','etape_notarie'];
+function openStepsManager(id){
+  const t = i18n[lang];
+
+  function render(){
+    const p = parcelles.find(x=>x.id===id);
+    if(!p) return;
+    document.getElementById('modalContent').innerHTML = `
+      <div class="modal-body" style="grid-template-columns:1fr;padding:28px;">
+        <div>
+          <h2 style="margin-bottom:4px;">${t.manage_steps} — ${p.id}</h2>
+          <p class="cf-sub" style="margin-bottom:18px;">${t.manage_steps_sub}</p>
+          <div class="steps-manager-list">
+            ${STEP_FIELDS.map((field,i)=>`
+              <label class="steps-manager-item">
+                <input type="checkbox" class="steps-manager-checkbox" data-field="${field}" ${p[field]?'checked':''}>
+                <span><b>${t.step_labels[i][0]}</b><br><span class="steps-manager-sub">${t.step_labels[i][1]}</span></span>
+              </label>
+            `).join('')}
+          </div>
+          <button class="cta-ghost" id="stepsManagerCloseBtn" style="margin-top:20px;width:auto;">${t.close_btn}</button>
+        </div>
+      </div>
+    `;
+    document.querySelectorAll('.steps-manager-checkbox').forEach(cb=>{
+      cb.addEventListener('change', async ()=>{
+        cb.disabled = true;
+        const {error} = await supabaseClient.from('parcelles').update({[cb.dataset.field]: cb.checked}).eq('id', id);
+        if(error){ alert("Erreur : "+error.message); cb.disabled=false; return; }
+        await loadParcelles();
+        render();
+      });
+    });
+    document.getElementById('stepsManagerCloseBtn').addEventListener('click', closeModal);
   }
   render();
   document.getElementById('modalOverlay').classList.add('active');
@@ -2053,12 +2102,21 @@ function renderGestion(){
           <span style="font-size:10px;margin-left:2px;">${p.video_url ? '✓' : '—'}</span>
         </button>
       </td>
+      <td>
+        <button class="icon-btn steps-manage-btn" data-id="${p.id}" title="${i18n[lang].manage_steps}">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M9 11l3 3L22 4M5 12l3 3L21 2M2 20h14"/></svg>
+          <span style="font-size:10px;margin-left:2px;">${stepsOf(p).filter(Boolean).length}/4</span>
+        </button>
+      </td>
       <td><button class="icon-btn del-btn" data-id="${p.id}" title="Supprimer"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 7h16M9 7V5a1 1 0 011-1h4a1 1 0 011 1v2m2 0l-1 13a1 1 0 01-1 1H8a1 1 0 01-1-1L6 7h12z"/></svg></button></td>
     </tr>
   `).join('');
 
   tbody.querySelectorAll('.video-manage-btn').forEach(btn=>{
     btn.addEventListener('click', ()=> openVideoManager(btn.dataset.id));
+  });
+  tbody.querySelectorAll('.steps-manage-btn').forEach(btn=>{
+    btn.addEventListener('click', ()=> openStepsManager(btn.dataset.id));
   });
 
   tbody.querySelectorAll('.obs-btn').forEach(btn=>{

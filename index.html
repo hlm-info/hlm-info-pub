@@ -536,12 +536,12 @@
       <div class="chain-card">
         <div class="cc-top">
           <div>
-            <div class="cc-title" data-i18n="cc_title">Parcelle Réf. AT-0143</div>
-            <div class="cc-loc" data-i18n="cc_loc">Abomey-Calavi, Zinvié — 600 m²</div>
+            <div class="cc-title" id="heroCcTitle" data-i18n="cc_title">Parcelle Réf. AT-0143</div>
+            <div class="cc-loc" id="heroCcLoc" data-i18n="cc_loc">Abomey-Calavi, Zinvié — 600 m²</div>
           </div>
-          <span class="badge-verified" data-i18n="cc_badge">✓ Titre vérifié</span>
+          <span class="badge-verified" id="heroCcBadge" data-i18n="cc_badge">✓ Titre vérifié</span>
         </div>
-        <div class="chain-list">
+        <div class="chain-list" id="heroCcSteps">
           <div class="chain-step">
             <div class="num">✓</div>
             <div class="txt"><b data-i18n="cc_s1_b">Titre foncier authentifié</b><span data-i18n="cc_s1_s">Conservation foncière — validé</span></div>
@@ -560,8 +560,8 @@
           </div>
         </div>
         <div class="cc-gps">
-          <span>GPS 6.4489° N, 2.3389° E</span>
-          <span data-i18n="cc_updated">Mis à jour il y a 2 jours</span>
+          <span id="heroCcGps">GPS 6.4489° N, 2.3389° E</span>
+          <span id="heroCcUpdated" data-i18n="cc_updated">Mis à jour récemment</span>
         </div>
       </div>
     </div>
@@ -1021,11 +1021,12 @@ const i18n = {
     hero_cta1:"Explorer le catalogue", hero_cta2:"Voir les locations meublées",
     stat1:"parcelles vérifiées", stat2:"litige de titre", stat3:"pays de résidence clients",
     cc_title:"Parcelle Réf. AT-0143", cc_loc:"Abomey-Calavi, Zinvié — 600 m²", cc_badge:"✓ Titre vérifié",
+    cc_title_prefix:"Parcelle Réf.", cc_badge_pending:"Vérification en cours",
     cc_s1_b:"Titre foncier authentifié", cc_s1_s:"Conservation foncière — validé",
     cc_s2_b:"Bornage contradictoire", cc_s2_s:"Géomètre agréé — validé",
     cc_s3_b:"Mandataire local désigné", cc_s3_s:"Agent HLM INFO PUB — actif",
     cc_s4_b:"Acte notarié", cc_s4_s:"En attente de signature",
-    cc_updated:"Mis à jour il y a 2 jours",
+    cc_updated:"Mis à jour récemment",
     proc_eyebrow:"Le parcours", proc_h2:"Cinq étapes, zéro déplacement obligatoire",
     proc_p:"Un processus séquentiel pensé pour quelqu'un qui ne peut pas se rendre sur place à chaque décision.",
     proc1_h:"Sélection à distance", proc1_p:"Parcourez le catalogue, filtrez par ville, budget et statut, et échangez en visio avec un conseiller.",
@@ -1129,11 +1130,12 @@ const i18n = {
     hero_cta1:"Explore the listings", hero_cta2:"View furnished rentals",
     stat1:"verified plots", stat2:"title disputes", stat3:"client countries of residence",
     cc_title:"Plot Ref. AT-0143", cc_loc:"Abomey-Calavi, Zinvié — 600 m²", cc_badge:"✓ Title verified",
+    cc_title_prefix:"Plot Ref.", cc_badge_pending:"Verification in progress",
     cc_s1_b:"Land title authenticated", cc_s1_s:"Land registry — validated",
     cc_s2_b:"Boundary survey", cc_s2_s:"Licensed surveyor — validated",
     cc_s3_b:"Local agent appointed", cc_s3_s:"HLM INFO PUB agent — active",
     cc_s4_b:"Notarized deed", cc_s4_s:"Awaiting signature",
-    cc_updated:"Updated 2 days ago",
+    cc_updated:"Recently updated",
     proc_eyebrow:"The journey", proc_h2:"Five steps, zero mandatory travel",
     proc_p:"A sequential process designed for someone who can't be on site for every decision.",
     proc1_h:"Remote selection", proc1_p:"Browse the listings, filter by city, budget and status, and speak with an advisor by video call.",
@@ -1254,6 +1256,7 @@ function applyLang(){
   renderGestionLocations();
   renderGestionMessages();
   renderGestionRdv();
+  renderHeroCard();
 }
 document.getElementById('langBtn').addEventListener('click', ()=>{
   lang = lang==='fr' ? 'en' : 'fr';
@@ -1269,6 +1272,26 @@ let parcelles = []; // rempli depuis Supabase
 let locations = []; // logements meublés, rempli depuis Supabase
 
 function stepsOf(p){ return [p.etape_titre, p.etape_bornage, p.etape_mandataire, p.etape_notarie]; }
+
+function renderHeroCard(){
+  if(!parcelles.length) return;
+  const t = i18n[lang];
+  const p = parcelles.find(x=>x.statut==='dispo') || parcelles[0];
+  const steps = stepsOf(p);
+
+  document.getElementById('heroCcTitle').textContent = `${t.cc_title_prefix} ${p.id}`;
+  document.getElementById('heroCcLoc').textContent = `${p.ville} — ${p.surface} m²`;
+  document.getElementById('heroCcBadge').textContent = p.etape_titre ? t.cc_badge : t.cc_badge_pending;
+
+  document.getElementById('heroCcSteps').innerHTML = steps.map((done,i)=>`
+    <div class="chain-step ${done?'':'pending'}">
+      <div class="num">${done?'✓':(i+1)}</div>
+      <div class="txt"><b>${t.step_labels[i][0]}</b><span>${t.step_labels[i][1]} — ${done?t.step_validated:t.step_pending}</span></div>
+    </div>
+  `).join('');
+
+  document.getElementById('heroCcGps').textContent = (p.gps && p.gps !== '—') ? `GPS ${p.gps}` : p.ville;
+}
 
 /* ---------------- DEVISES ---------------- */
 const rates = {FCFA:{label:"FCFA",rate:1}, EUR:{label:"€",rate:1/655.96}, USD:{label:"$",rate:1/605.5}};
@@ -1376,6 +1399,7 @@ async function loadParcelles(){
   populateVilleFilter();
   renderCatalogue();
   renderGestion();
+  renderHeroCard();
 }
 
 async function loadLocations(){

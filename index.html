@@ -2194,7 +2194,7 @@ document.getElementById('addParcelleBtn').addEventListener('click', async ()=>{
   const {error} = await supabaseClient.from('parcelles').insert({
     id, ville, type, surface, prix, statut, gps:"—", photo_url, photo_urls, video_url,
     observations: observations || null,
-    description:"Nouvelle parcelle ajoutée par l'équipe de gestion, en cours de documentation complète.",
+    description:"Nouvelle parcelle ajoutée par l'équipe de gestion HLM INFO PUB.",
     etape_titre:true, etape_bornage:false, etape_mandataire:false, etape_notarie:false
   });
   if(error){ alert("Erreur : "+error.message); return; }
@@ -2298,7 +2298,7 @@ document.getElementById('addLocationBtn').addEventListener('click', async ()=>{
   const photo_url = photo_urls[0] || null;
   const {error} = await supabaseClient.from('locations_meublees').insert({
     id, ville, type, chambres, surface, loyer, statut, photo_url, photo_urls,
-    description:"Nouveau logement meublé ajouté par l'équipe de gestion, en cours de documentation complète.",
+    description:"Nouveau logement meublé ajouté par l'équipe de gestion HLM INFO PUB.",
     eq_wifi: document.getElementById('eqWifi').checked,
     eq_clim: document.getElementById('eqClim').checked,
     eq_cuisine: document.getElementById('eqCuisine').checked,

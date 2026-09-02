@@ -1929,7 +1929,7 @@ function openModal(id){
       <div>
         <h2>Réf. ${p.id} — ${typeLabelParcelle(p.type)}</h2>
         <div class="loc">${p.ville} · ${p.surface} m² · GPS ${p.gps||'—'}</div>
-        <p class="desc">${p.description||''}</p>
+        ${p.description ? `<p class="desc">${p.description}</p>` : ''}
         ${p.video_url ? `<div class="video-block"><b>${t.video_label}</b><video src="${p.video_url}" controls></video></div>` : ''}
         <div class="meta-grid">
           <div class="meta-item"><span>${t.th_type}</span><b>${typeLabelParcelle(p.type)}</b></div>
@@ -2027,7 +2027,7 @@ function openLocationModal(id){
       <div>
         <h2>Réf. ${l.id}</h2>
         <div class="loc">${l.ville} · ${l.chambres} ${t.th_chambres.toLowerCase()}</div>
-        <p class="desc">${l.description||''}</p>
+        ${l.description ? `<p class="desc">${l.description}</p>` : ''}
         <div class="meta-grid">
           <div class="meta-item" style="grid-column:1/-1;"><span>${t.th_statut}</span><b>${locStatusLabel(l.statut)}</b></div>
         </div>
@@ -2194,7 +2194,6 @@ document.getElementById('addParcelleBtn').addEventListener('click', async ()=>{
   const {error} = await supabaseClient.from('parcelles').insert({
     id, ville, type, surface, prix, statut, gps:"—", photo_url, photo_urls, video_url,
     observations: observations || null,
-    description:"Nouvelle parcelle ajoutée par l'équipe de gestion HLM INFO PUB.",
     etape_titre:true, etape_bornage:false, etape_mandataire:false, etape_notarie:false
   });
   if(error){ alert("Erreur : "+error.message); return; }
@@ -2298,7 +2297,6 @@ document.getElementById('addLocationBtn').addEventListener('click', async ()=>{
   const photo_url = photo_urls[0] || null;
   const {error} = await supabaseClient.from('locations_meublees').insert({
     id, ville, type, chambres, surface, loyer, statut, photo_url, photo_urls,
-    description:"Nouveau logement meublé ajouté par l'équipe de gestion HLM INFO PUB.",
     eq_wifi: document.getElementById('eqWifi').checked,
     eq_clim: document.getElementById('eqClim').checked,
     eq_cuisine: document.getElementById('eqCuisine').checked,

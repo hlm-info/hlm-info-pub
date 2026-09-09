@@ -504,6 +504,7 @@
     <nav class="tabs">
       <button class="tab-btn" data-view="catalogue" data-i18n="nav_catalogue">Catalogue</button>
       <button class="tab-btn" data-view="location" data-i18n="nav_location">Location</button>
+      <a class="tab-btn" href="/blog/" data-i18n="nav_blog" style="text-decoration:none;display:inline-flex;align-items:center;">Blog</a>
     </nav>
     <div class="head-actions">
       <button class="lang-btn" id="langBtn" title="Changer de langue / Switch language">🌐 <span id="langFR" class="cur">FR</span>/<span id="langEN">EN</span></button>
@@ -517,6 +518,7 @@
   <nav class="mobile-tabs" id="mobileTabs">
     <button class="tab-btn mobile-tab-btn" data-view="catalogue" data-i18n="nav_catalogue">Catalogue</button>
     <button class="tab-btn mobile-tab-btn" data-view="location" data-i18n="nav_location">Location</button>
+    <a class="tab-btn mobile-tab-btn" href="/blog/" data-i18n="nav_blog" style="text-decoration:none;">Blog</a>
     <button type="button" class="mobile-devise-btn" id="deviseBtnMobile">1 200 000 FCFA <span id="deviseAltMobile">≈ 1 829 €</span></button>
   </nav>
 </header>
@@ -982,6 +984,7 @@
         <h4 data-i18n="foot_h_plat">Plateforme</h4>
         <ul>
           <li><button type="button" class="footer-link" data-view="catalogue" data-i18n="foot_li1">Catalogue</button></li>
+          <li><a class="footer-link" href="/blog/" data-i18n="nav_blog" style="text-decoration:underline;">Blog</a></li>
           <li data-i18n="foot_li2">Comment ça marche</li>
           <li data-i18n="foot_li3">Devenir mandataire local</li>
           <li><button type="button" class="footer-link" data-view="gestion" data-i18n="foot_li4">Espace gestion</button></li>
@@ -1078,7 +1081,7 @@ const i18n = {
     modal_note:"Une procuration notariée vous permet de mandater notre agent local pour signer en votre nom, sans déplacement.",
     whatsapp_title:"Discuter sur WhatsApp",
     aucune_parcelle:"Aucune parcelle ne correspond à ces critères.",
-    nav_location:"Location",
+    nav_location:"Location", nav_blog:"Blog",
     loc_eyebrow:"Location meublée", loc_h2:"Appartements et maisons entièrement meublés",
     loc_p:"Emménagez directement, sans rien acheter : logements prêts à vivre, gérés à distance pour la diaspora.",
     f_type_all:"Tous types", type_appartement:"Appartement", type_maison:"Maison", type_immeuble:"Immeuble entier", type_parcelle:"Parcelle", add_type_bien:"Type de bien",
@@ -1188,7 +1191,7 @@ const i18n = {
     modal_note:"A notarized power of attorney lets you appoint our local agent to sign on your behalf, with no travel required.",
     whatsapp_title:"Chat on WhatsApp",
     aucune_parcelle:"No plot matches these criteria.",
-    nav_location:"Rentals",
+    nav_location:"Rentals", nav_blog:"Blog",
     loc_eyebrow:"Furnished rentals", loc_h2:"Fully furnished apartments and houses",
     loc_p:"Move in directly, nothing to buy: move-in ready homes, managed remotely for the diaspora.",
     f_type_all:"All types", type_appartement:"Apartment", type_maison:"House", type_immeuble:"Whole building", type_parcelle:"Bare plot", add_type_bien:"Property type",

@@ -118,7 +118,8 @@
     display:flex;align-items:center;justify-content:space-between;
     padding:16px 0;
   }
-  .logo{display:flex;align-items:baseline;gap:8px;}
+  .logo{display:flex;align-items:center;gap:10px;}
+  .logo-img{height:52px;width:auto;display:block;}
   .logo .mark{
     font-family:'Fraunces',serif;font-weight:700;font-size:22px;
   }
@@ -476,6 +477,8 @@
   @media(max-width:640px){
     .head-actions .cta-btn{display:none;}
     .head-actions .devise-btn{display:none;}
+    .logo-img{height:40px;}
+    .logo .tag{display:none;}
   }
   @media(max-width:640px){
     .grid-cards{grid-template-columns:1fr;}
@@ -494,7 +497,7 @@
 <header>
   <div class="wrap headbar">
     <div class="logo" data-view="accueil" style="cursor:pointer;">
-      <div class="mark">HLM <span>INFO PUB</span></div>
+      <img src="/logo.png" alt="HLM INFO PUB" class="logo-img">
       <div class="tag" data-i18n="logo_tag">FONCIER VÉRIFIÉ · BÉNIN</div>
     </div>
     <button class="back-home-btn" id="backHomeBtn" data-view="accueil" title="Retour à l'accueil">

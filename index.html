@@ -1350,6 +1350,7 @@ function switchView(name){
   if(name==='catalogue') renderCatalogue();
   if(name==='location') renderCatalogueLocation();
   if(name==='gestion'){ checkAuthAndRenderGestion(); }
+  history.replaceState(null, '', name==='accueil' ? window.location.pathname : '#'+name);
   window.scrollTo({top:0,behavior:'smooth'});
 }
 document.getElementById('menuBtn').addEventListener('click', ()=>{
@@ -2330,6 +2331,8 @@ applyLang();
 loadParcelles();
 loadLocations();
 setupBookingDateRange();
+const initialView = window.location.hash.replace('#','');
+if(['catalogue','location','gestion'].includes(initialView)) switchView(initialView);
 </script>
 </body>
 </html>

@@ -116,10 +116,10 @@
   }
   .headbar{
     display:flex;align-items:center;justify-content:space-between;
-    padding:16px 0;
+    padding:16px 0;flex-wrap:nowrap;
   }
-  .logo{display:flex;align-items:center;gap:10px;}
-  .logo-img{height:72px;width:auto;display:block;}
+  .logo{display:flex;align-items:center;gap:10px;flex-shrink:0;min-width:0;}
+  .logo-img{height:72px;width:auto;display:block;flex-shrink:0;}
   .logo .mark{
     font-family:'Fraunces',serif;font-weight:700;font-size:22px;
   }
@@ -477,8 +477,12 @@
   @media(max-width:640px){
     .head-actions .cta-btn{display:none;}
     .head-actions .devise-btn{display:none;}
-    .logo-img{height:52px;}
-    .logo .tag{display:none;}
+    .logo{flex-direction:column;align-items:flex-start;gap:2px;}
+    .logo-img{height:48px;}
+    .logo .tag{font-size:8.5px;}
+  }
+  @media(max-width:400px){
+    .logo-img{height:40px;}
   }
   @media(max-width:640px){
     .grid-cards{grid-template-columns:1fr;}
